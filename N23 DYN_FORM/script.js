@@ -1,68 +1,106 @@
+"use strict"
 function createForm(arr) {
-  let form1 = document.createElement("form");
+  let form = document.createElement("form");
+  function newLine() {
+    let brElem = document.createElement('br');
+    form.appendChild(brElem);
+  };
   for (let i = 0; i < arr.length; i++) {
     const line = arr[i];
-    let labelName = document.createTextNode(line.label);
-    form1.appendChild(labelName);
-    let type1;
-    let elem;
-    if (line.kind === 'longtext' || line.kind === 'number' || line.kind === 'shorttext') {
-      elem = 'input';
-      type1 = 'text';
-    }
-    else if (line.kind === 'combo') {
-      elem = 'select';
-    }
-    else if (line.kind === 'radio') {
-      elem = 'input';
-      type1 = 'radio';
-    }
-    else if (line.kind === 'check') {
-      elem = 'input';
-      type1 = 'checkbox';
-    }
-    else if (line.kind === 'memo') 
-      elem = 'textarea';
-    else if (line.kind === 'submit') {
-        elem = 'input';
-        type1 = 'submit'; 
-      };
-    /* if (type1 === 'radio') {
-      for (let i = 0; i < line.variants.length; i++) {
-        let variant = line.variants[i];
-        let elem2 = document.createElement(elem);
-        let value1 = variant.value;
-        let radioName = variant.text;
-        let radio1 = document.createTextNode(radioName);
-        elem2.setAttribute("value", value1);
-        elem2.appendChild(radio1);
-    }
-  } */
-      let elem1 = document.createElement(elem);
-    if (elem === 'select') {
-      for (let i = 0; i < line.variants.length; i++){
-        let variant = line.variants[i];
-        let optionName = variant.text;
-        let value1 = variant.value;
-        let option1 = document.createElement('option');
-        let optionValue = document.createTextNode(optionName);
-        option1.appendChild(optionValue);
-        option1.setAttribute("value", value1);
-        elem1.appendChild(option1);
+    switch (line.kind) {
+      case 'longtext': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        let inputElem = document.createElement('input');
+        inputElem.type = 'text';
+        inputElem.name = line.name;
+        form.appendChild(inputElem);
+        newLine();
       }
-    };
-    if (type1 === 'submit') {
-      value1 = line.caption;
-      elem1.setAttribute("value", value1);
-    };
-    elem1.setAttribute("type", type1);
-    elem1.setAttribute("name", line.name);
-    elem1.setAttribute("checked", "checked");
-    let newLine = document.createElement("br");
-    form1.appendChild(elem1);
-    form1.appendChild(newLine);
+      break;
+      case 'number': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        let inputElem = document.createElement('input');
+        inputElem.type = 'text';
+        inputElem.name = line.name;
+        form.appendChild(inputElem);
+        newLine();
+      }
+      break;
+      case 'shorttext': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        let inputElem = document.createElement('input');
+        inputElem.type = 'text';
+        inputElem.name = line.name;
+        form.appendChild(inputElem);
+        newLine();
+      }
+      break;
+      case 'combo': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        let selectElem = document.createElement('select');
+        selectElem.name = line.name;
+        for (let i = 0; i < line.variants.length; i++) {
+          const variant =  line.variants[i];
+          let optionElem = document.createElement('option');
+          optionElem.value = variant.value;
+          let optionName = document.createTextNode(variant.text);
+          optionElem.appendChild(optionName);
+          selectElem.appendChild(optionElem);
+        }
+        form.appendChild(selectElem);
+        newLine();
+      }
+      break;
+      case 'radio': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        for (let i = 0; i < line.variants.length; i++) {
+          const variant = line.variants[i];
+          let radioElem = document.createElement('input');
+          radioElem.type = 'radio';
+          radioElem.name = line.name;
+          radioElem.value = variant.value;
+          let radioName = document.createTextNode(variant.text);
+          radioElem.appendChild(radioName);
+          form.appendChild(radioElem);
+        }
+        newLine();
+      }
+      break;
+      case 'check': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        let checkElem = document.createElement('input');
+        checkElem.type = 'checkbox';
+        checkElem.checked = 'checked';
+        form.appendChild(checkElem);
+        newLine();
+      }
+      break;
+      case 'memo': {
+        let labelName = document.createTextNode(line.label);
+        form.appendChild(labelName);
+        newLine();
+        let textarElem = document.createElement('textarea');
+        form.appendChild(textarElem);
+        newLine();
+      }
+      break;
+      case 'submit': {
+        let submitElem = document.createElement('input');
+        submitElem.type = 'submit';
+        submitElem.value = line.caption;
+        form.appendChild(submitElem);
+        newLine();
+      }
+      break;
+    }
   }
-  document.body.appendChild(form1);
+  document.body.appendChild(form);
 }
 
 const formDef1=
