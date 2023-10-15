@@ -65,8 +65,8 @@ function createForm(arr) {
           radioElem.name = line.name;
           radioElem.value = variant.value;
           let radioName = document.createTextNode(variant.text);
-          radioElem.appendChild(radioName);
           form.appendChild(radioElem);
+          form.appendChild(radioName);
         }
         newLine();
       }
