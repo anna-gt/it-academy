@@ -1,7 +1,17 @@
+'use strict'
 function deepCopy(arg) {
-  if (arg instanceof String ||  arg instanceof Number || typeof arg === 'boolean' || typeof arg === 'undefined' || Number.isNaN(arg))
+  if (typeof arg === 'string' ||  typeof arg === 'number' || typeof arg === 'boolean' || typeof arg === 'undefined' || Number.isNaN(arg) || arg === null)
     return arg;
-  if (arg instanceof Object) {
+  else if (arg instanceof Array) {
+    let arr = [];
+     for (let i = 0; i < arg.length; i++) {
+      if (arg[i] instanceof Object || arg[i] instanceof Array)
+         arr.push(deepCopy(arg[i]));
+       else arr.push(arg[i]);
+    }
+    return arr;
+   }
+  else if (arg instanceof Object) {
     let obj = {};
     for (let key in arg) {
       if (arg[key] instanceof Object || arg[key] instanceof Array) 
@@ -9,16 +19,8 @@ function deepCopy(arg) {
       else obj[key] = arg[key];
     }
     return obj;
-  };
-  if (arg instanceof Array) {
-    let arr = [];
-    for (let k of arg) {
-      if (arg[k] instanceof Object || arg[k] instanceof Array)
-        arr[k] = deepCopy(arg[k]);
-      else arr[k] = arg[k]
-    }
-    return arr;
   }
+  
 }
 
 function deepCopyTests () {
@@ -40,7 +42,7 @@ function deepCopyTests () {
     passed += 1;
   };
   console.log('h1.a===h2.a будет true');
-  if (h1.a===h2) {
+  if (h1.a===h2.a) {
     console.log(passedMsg);
     passed += 1;
   }
