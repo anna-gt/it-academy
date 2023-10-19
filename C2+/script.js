@@ -1,20 +1,20 @@
 'use strict'
 function deepCopy(arg) {
-  if (typeof arg === 'string' ||  typeof arg === 'number' || typeof arg === 'boolean' || typeof arg === 'undefined' || Number.isNaN(arg) || arg === null)
+  if (typeof arg !=="object" || arg === null)
     return arg;
   else if (arg instanceof Array) {
     let arr = [];
      for (let i = 0; i < arg.length; i++) {
-      if (arg[i] instanceof Object || arg[i] instanceof Array)
+      if (arg[i] instanceof Object)
          arr.push(deepCopy(arg[i]));
        else arr.push(arg[i]);
     }
     return arr;
    }
-  else if (arg instanceof Object) {
+  else {
     let obj = {};
     for (let key in arg) {
-      if (arg[key] instanceof Object || arg[key] instanceof Array) 
+      if (arg[key] instanceof Object) 
         obj[key] = deepCopy(arg[key]);
       else obj[key] = arg[key];
     }
