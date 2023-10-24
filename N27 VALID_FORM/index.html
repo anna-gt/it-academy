@@ -6,27 +6,28 @@
   <title>Document</title>
 </head>
 <body>
-  <script src="scropt.js"></script>
+  <script src="script.js"></script>
   Для внесения вашего сайта в каталог, заполните форму:
-  <form name='ADDSITE' action='http://fe.it-academy.by/TestForm.php' novalidate>
-    Разработчики:<input type="text" name="dev"><br>
-    Название сайта:<input type="text" name="name"><br>
-    URL сайта:<input type="text" name="address"><br>
-    Дата запуска сайта:<input type="date" name="startdate"><br>
-    Посетителей в сутки:<input type="number" name="visitors"><br>
-    E-mail для связи:<input type="text" name="mail"><br>
+  <form name='addsite' action='http://fe.it-academy.by/TestForm.php' novalidate>
+    Разработчики:<input type="text" name="developers"><span id="dev"></span><br>
+    Название сайта:<input type="text" name="name"><span id="name"></span><br>
+    URL сайта:<input type="text" name="address"><span id="address"></span><br>
+    Дата запуска сайта:<input type="date" name="startdate"><span id="startdate"></span><br>
+    Посетителей в сутки:<input type="number" name="visitors"><span id="visitors"></span><br>
+    E-mail для связи:<input type="text" name="mail"><span id="mail"></span><br>
     Рубрика каталога:
     <select name='rubric'>
       <option value=1>здоровье</option>
       <option value=2>домашний уют</option>
       <option value=3 selected>бытовая техника</option>
-    </select>
+      <span id="rubric"></span>
+    </select><br>
     Размещение:
-    <input type='radio' name='public' value=1><span class='SRadio8a'>бесплатное</span>
-    <input type='radio' name='public' value=2><span class='SRadio8a'>платное</span>
-    <input type='radio' name='public' value=3><span class='SRadio8a'>VIP</span>
-    Разрешить отзывы: <input type="checkbox" name="reply">
-    Описание сайта:<textarea name='article'></textarea>
+    <input type='radio' name='public' value=1><span class='SRadio8a'>бесплатное</span><span id="public1"></span>
+    <input type='radio' name='public' value=2><span class='SRadio8a'>платное</span><span id="public2"></span>
+    <input type='radio' name='public' value=3><span class='SRadio8a'>VIP</span><span id="public3"></span><br>
+    Разрешить отзывы: <input type="checkbox" name="reply"><span id="reply"></span><br>
+    Описание сайта:<textarea name='article'></textarea><span id="article"></span><br>
     <input type='submit' value='Опубликовать'>
   </form>
 </body>
