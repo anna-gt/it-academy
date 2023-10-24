@@ -21,8 +21,8 @@ function buildWrapper(tag) {
     finString = makeMnemonic(string);
     let finAtr = '';
     for (let key in atr) {
-      atr[key] = makeMnemonic(atr[key]);
-      finAtr += ` ${key}='${atr[key]}'`;
+      let atrValue = makeMnemonic(atr[key]);
+      finAtr += ` ${key}='${atrValue}'`;
     }
     let result = `<${tag}${finAtr}> ${finString}<${tag}>`;
     return result;
