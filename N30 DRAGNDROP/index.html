@@ -21,14 +21,18 @@
     imgElem.style.left = imgElemX + 'px';
     imgElem.style.top = imgElemY + 'px';
     imgElem.onmousedown = imgDrag;
+    imgElem.onmouseover = changeCursor;
   }
   /*for (let imgElem of imgElems) {
     imgElem.onmousedown = imgDrag;
     }*/
-
+  function changeCursor(eo) {
+    this.style.cursor = 'grab';
+  }
   function imgDrag(eo) {
     eo = eo || window.event;
     const self = this;
+    self.style.cursor = 'grabbing';
     const shiftX = eo.pageX - self.offsetLeft;
     const shiftY = eo.pageY - self.offsetTop;
     self.style.position='absolute';
@@ -43,6 +47,7 @@
     moveAt(eo);
    }
     self.onmouseup = function() {
+      self.style.cursor = 'grab';
       document.onmousemove = null;
       self.onmouseup = null;
     }
