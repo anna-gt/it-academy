@@ -11,8 +11,45 @@
 <img src='http://fe.it-academy.by/Sites/0000007/No_smoking.png' style='padding-left: 50px'>
 
 <script>
-  // здесь ваш код
+  'use strict'
+  var imgElems = document.getElementsByTagName('img');
+  for (let i = (imgElems.length-1); i >= 0; i--) {
+    let imgElem = imgElems[i];
+    const imgElemX = imgElem.offsetLeft;
+    const imgElemY = imgElem.offsetTop;
+    imgElem.style.position = 'absolute';
+    imgElem.style.left = imgElemX + 'px';
+    imgElem.style.top = imgElemY + 'px';
+    imgElem.onmousedown = imgDrag;
+  }
+  /*for (let imgElem of imgElems) {
+    imgElem.onmousedown = imgDrag;
+    }*/
 
+  function imgDrag(eo) {
+    eo = eo || window.event;
+    const self = this;
+    const shiftX = eo.pageX - self.offsetLeft;
+    const shiftY = eo.pageY - self.offsetTop;
+    self.style.position='absolute';
+    moveAt(eo);
+    document.body.appendChild(self);
+    self.style.zIndex = 1000;
+    function moveAt(eo) {
+      self.style.left = eo.pageX - shiftX + 'px';
+      self.style.top = eo.pageY - shiftY + 'px';
+    }
+    document.onmousemove = function(eo) {
+    moveAt(eo);
+   }
+    self.onmouseup = function() {
+      document.onmousemove = null;
+      self.onmouseup = null;
+    }
+    self.ondragstart = function() {
+    return false;
+  }
+}
 </script>
 
   </body>
