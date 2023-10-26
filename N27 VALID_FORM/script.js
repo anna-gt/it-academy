@@ -327,9 +327,9 @@ rubricField.onblur = function() {
 const radio1 = document.getElementById('public1');
 const radio2 = document.getElementById('public2');
 const radio3 = document.getElementById('public3');
-radio1.addEventListener('blur',radioCheck, false );
-radio2.addEventListener('blur',radioCheck, false );
-radio3.addEventListener('blur',radioCheck, false );
+radio1.addEventListener('change',radioCheck, false );
+radio2.addEventListener('change',radioCheck, false );
+radio3.addEventListener('change',radioCheck, false );
 function radioCheck(eo) { 
   eo = eo || window.event;
   const publicValue = publicField.value;
@@ -342,7 +342,7 @@ function radioCheck(eo) {
   }
 }
 
-replyField.onblur = function() {
+replyField.onchange = function() {
   const replyValue = replyField.checked;
   errorReplyMssg.innerHTML = '';
   try {
