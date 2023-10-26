@@ -23,7 +23,7 @@ const rubricField = formElem.elements.rubric;
 const errorRubricMssg = document.getElementById('rubric');
 
 const publicField = formElem.elements.public;
-const errorPublicMssg = document.getElementById('public1');
+const errorPublicMssg = document.getElementById('public');
 
 const replyField = formElem.elements.reply;
 const errorReplyMssg = document.getElementById('reply');
@@ -88,93 +88,12 @@ function validateForm(eo) {
   errorArticleMssg.innerHTML = '';
 
   try {
-    if (devValue.length < 1) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, разработчиков!');
-      errorDevMssg.appendChild(errorMsg);
-      errorDevMssg.style.color = 'red';
-      devField.focus();
+    if (articleValue.length < 1) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, описание сайта!');
+      errorArticleMssg.appendChild(errorMsg);
+      errorArticleMssg.style.color = 'red';
+      articleField.focus();
       eo.preventDefault();
-      return;
-    }
-    if (nameValue.length < 1) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, название сайта!');
-      errorNameMssg.appendChild(errorMsg);
-      errorNameMssg.style.color = 'red';
-      nameField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (addressValue.length < 1) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, URL сайта!');
-      errorAddressMssg.appendChild(errorMsg);
-      errorAddressMssg.style.color = 'red';
-      addressField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (startdateValue.length < 1) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, дату запуска сайта!');
-      errorStartDateMssg.appendChild(errorMsg);
-      errorStartDateMssg.style.color = 'red';
-      startdateField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (startdateValue < '2015-00-01') {
-      let errorMsg = document.createTextNode('Дата запуска не может быть раньше 01.01.2015г!');
-      errorStartDateMssg.appendChild(errorMsg);
-      errorStartDateMssg.style.color = 'red';
-      startdateField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (isNaN(visitorsValue)) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, количество посетителей!');
-      errorVisitorsMssg.appendChild(errorMsg);
-      errorVisitorsMssg.style.color = 'red';
-      visitorsField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (visitorsValue < 3) {
-      let errorMsg = document.createTextNode('Слишком мало!');
-      errorVisitorsMssg.appendChild(errorMsg);
-      errorVisitorsMssg.style.color = 'red';
-      visitorsField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (mailValue.length < 1) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, E-mail для связи!');
-      errorMailMssg.appendChild(errorMsg);
-      errorMailMssg.style.color = 'red';
-      mailField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (rubricValue == 3) {
-      let errorMsg = document.createTextNode('Бытовая техника сейчас недоступна!');
-      errorRubricMssg.appendChild(errorMsg);
-      errorRubricMssg.style.color = 'red';
-      rubricField.focus();
-      eo.preventDefault();
-      return;
-    }
-    if (publicValue == '') {
-      let errorMsg = document.createTextNode('Выберите, пожалуйста, вид размещения!');
-      errorPublicMssg.appendChild(errorMsg);
-      errorPublicMssg.style.color = 'red';
-      document.getElementById('publicscroll').scrollIntoView();
-      eo.preventDefault();
-      return;
-    }
-    if (publicValue == '3') {
-      let errorMsg = document.createTextNode('VIP размещение сейчас недоступно!');
-      errorPublicMssg.appendChild(errorMsg);
-      errorPublicMssg.style.color = 'red';
-      document.getElementById('publicscroll').scrollIntoView();
-      eo.preventDefault();
-      return;
     }
     if (!replyValue) {
       let errorMsg = document.createTextNode('Вы не разрешили отзывы!');
@@ -182,15 +101,83 @@ function validateForm(eo) {
       errorReplyMssg.style.color = 'red';
       replyField.focus();
       eo.preventDefault();
-      return;
     }
-    if (articleValue.length < 1) {
-      let errorMsg = document.createTextNode('Введите, пожалуйста, описание сайта!');
-      errorArticleMssg.appendChild(errorMsg);
-      errorArticleMssg.style.color = 'red';
-      articleField.focus();
+    if (publicValue == '3') {
+      let errorMsg = document.createTextNode('VIP размещение сейчас недоступно!');
+      errorPublicMssg.appendChild(errorMsg);
+      errorPublicMssg.style.color = 'red';
+      document.getElementById('publicscroll').scrollIntoView();
       eo.preventDefault();
-      return;
+    }
+    if (publicValue == '') {
+      let errorMsg = document.createTextNode('Выберите, пожалуйста, вид размещения!');
+      errorPublicMssg.appendChild(errorMsg);
+      errorPublicMssg.style.color = 'red';
+      document.getElementById('publicscroll').scrollIntoView();
+      eo.preventDefault();
+    }
+    if (rubricValue == 3) {
+      let errorMsg = document.createTextNode('Бытовая техника сейчас недоступна!');
+      errorRubricMssg.appendChild(errorMsg);
+      errorRubricMssg.style.color = 'red';
+      rubricField.focus();
+      eo.preventDefault();
+    }
+    if (mailValue.length < 1) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, E-mail для связи!');
+      errorMailMssg.appendChild(errorMsg);
+      errorMailMssg.style.color = 'red';
+      mailField.focus();
+      eo.preventDefault();
+    }
+    if (isNaN(visitorsValue)) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, количество посетителей!');
+      errorVisitorsMssg.appendChild(errorMsg);
+      errorVisitorsMssg.style.color = 'red';
+      visitorsField.focus();
+      eo.preventDefault();
+    }
+    if (visitorsValue < 3) {
+      let errorMsg = document.createTextNode('Слишком мало!');
+      errorVisitorsMssg.appendChild(errorMsg);
+      errorVisitorsMssg.style.color = 'red';
+      visitorsField.focus();
+      eo.preventDefault();
+    } 
+    if (startdateValue.length < 1) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, дату запуска сайта!');
+      errorStartDateMssg.appendChild(errorMsg);
+      errorStartDateMssg.style.color = 'red';
+      startdateField.focus();
+      eo.preventDefault();
+    }
+    if (startdateValue < '2015-00-01') {
+      let errorMsg = document.createTextNode('Дата запуска не может быть раньше 01.01.2015г!');
+      errorStartDateMssg.appendChild(errorMsg);
+      errorStartDateMssg.style.color = 'red';
+      startdateField.focus();
+      eo.preventDefault();
+    }
+    if (addressValue.length < 1) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, URL сайта!');
+      errorAddressMssg.appendChild(errorMsg);
+      errorAddressMssg.style.color = 'red';
+      addressField.focus();
+      eo.preventDefault();
+    }
+    if (nameValue.length < 1) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, название сайта!');
+      errorNameMssg.appendChild(errorMsg);
+      errorNameMssg.style.color = 'red';
+      nameField.focus();
+      eo.preventDefault();
+    }
+    if (devValue.length < 1) {
+      let errorMsg = document.createTextNode('Введите, пожалуйста, разработчиков!');
+      errorDevMssg.appendChild(errorMsg);
+      errorDevMssg.style.color = 'red';
+      devField.focus();
+      eo.preventDefault();
     }
   }
     catch ( ex ) {
@@ -202,15 +189,14 @@ function validateForm(eo) {
 
  devField.onblur = function() {
       const devValue = devField.value;
+      errorDevMssg.innerHTML = '';
       try {
         if (devValue.length < 1) {
-          errorDevMssg.innerHTML = '';
           let errorMsg = document.createTextNode('Введите, пожалуйста, разработчиков!');
           errorDevMssg.appendChild(errorMsg);
           errorDevMssg.style.color = 'red';
           return;
         }
-        errorDevMssg.innerHTML = '';
       }
       catch(ex){
       console.log(ex);
@@ -221,15 +207,14 @@ function validateForm(eo) {
 
   nameField.onblur = function() {
     const nameValue = nameField.value;
+    errorNameMssg.innerHTML = '';
     try {
       if (nameValue.length < 1) {
-        errorNameMssg.innerHTML = '';
         let errorMsg = document.createTextNode('Введите, пожалуйста, название сайта!');
         errorNameMssg.appendChild(errorMsg);
         errorNameMssg.style.color = 'red';
         return;
       }
-      errorNameMssg.innerHTML = '';
     }
     catch(ex){
     console.log(ex);
@@ -240,15 +225,14 @@ function validateForm(eo) {
 
   addressField.onblur = function() {
     const addressValue = addressField.value;
+    errorAddressMssg.innerHTML = '';
     try {
       if (addressValue.length < 1) {
-        errorAddressMssg.innerHTML = '';
         let errorMsg = document.createTextNode('Введите, пожалуйста, URL сайта!');
         errorAddressMssg.appendChild(errorMsg);
         errorAddressMssg.style.color = 'red';
         return;
       }
-      errorAddressMssg.innerHTML = '';
     }
     catch(ex){
     console.log(ex);
@@ -259,9 +243,9 @@ function validateForm(eo) {
 
   startdateField.onblur = function() {
     const startdateValue = startdateField.value;
+    errorStartDateMssg.innerHTML = '';
     try {
       if (startdateValue.length < 1) {
-        errorStartDateMssg.innerHTML = '';
         let errorMsg = document.createTextNode('Введите, пожалуйста, дату запуска сайта!');
         errorStartDateMssg.appendChild(errorMsg);
         errorStartDateMssg.style.color = 'red';
@@ -273,7 +257,6 @@ function validateForm(eo) {
         errorStartDateMssg.style.color = 'red';
         return;
       }
-      errorStartDateMssg.innerHTML = '';
     }
     catch(ex){
     console.log(ex);
@@ -283,7 +266,8 @@ function validateForm(eo) {
 }
 
 visitorsField.onblur = function() {
-  const visitorsValue = visitorsField.value;
+  const visitorsValue = parseInt(visitorsField.value.trim());
+  errorVisitorsMssg.innerHTML = '';
   try {
     if (isNaN(visitorsValue)) {
       let errorMsg = document.createTextNode('Введите, пожалуйста, количество посетителей!');
@@ -297,7 +281,6 @@ visitorsField.onblur = function() {
       errorVisitorsMssg.style.color = 'red';
       return;
     }
-    errorVisitorsMssg.innerHTML = '';
   }
   catch(ex){
   console.log(ex);
@@ -308,6 +291,7 @@ visitorsField.onblur = function() {
 
 mailField.onblur = function() {
   const mailValue = mailField.value;
+  errorMailMssg.innerHTML = '';
   try {
     if (mailValue.length < 1) {
       let errorMsg = document.createTextNode('Введите, пожалуйста, E-mail для связи!');
@@ -315,7 +299,6 @@ mailField.onblur = function() {
       errorMailMssg.style.color = 'red';
       return;
     }
-    errorMailMssg.innerHTML = '';
   }
   catch(ex){
   console.log(ex);
@@ -326,6 +309,7 @@ mailField.onblur = function() {
 
 rubricField.onblur = function() {
   const rubricValue = rubricField.value;
+  errorRubricMssg.innerHTML = '';
   try {
     if (rubricValue == 3) {
       let errorMsg = document.createTextNode('Бытовая техника сейчас недоступна!');
@@ -333,7 +317,41 @@ rubricField.onblur = function() {
       errorRubricMssg.style.color = 'red';
       return;
     }
-    errorRubricMssg.innerHTML = '';
+  }
+  catch(ex){
+  console.log(ex);
+  alert('Извините, что-то пошло не так, неожиданный сбой! Пересмотрите заполнение формы, возможно, это всё из-за вас!');
+  eo.preventDefault(); 
+  }
+}
+const radio1 = document.getElementById('public1');
+const radio2 = document.getElementById('public2');
+const radio3 = document.getElementById('public3');
+radio1.addEventListener('blur',radioCheck, false );
+radio2.addEventListener('blur',radioCheck, false );
+radio3.addEventListener('blur',radioCheck, false );
+function radioCheck(eo) {
+  eo = eo || window.event;
+  const publicValue = publicField.value;
+  errorPublicMssg.innerHTML = '';
+  if (publicValue == '3') {
+    let errorMsg = document.createTextNode('VIP размещение сейчас недоступно!');
+    errorPublicMssg.appendChild(errorMsg);
+    errorPublicMssg.style.color = 'red';
+    return;
+  }
+}
+
+replyField.onblur = function() {
+  const replyValue = replyField.checked;
+  errorReplyMssg.innerHTML = '';
+  try {
+    if (!replyValue) {
+      let errorMsg = document.createTextNode('Вы не разрешили отзывы!');
+      errorReplyMssg.appendChild(errorMsg);
+      errorReplyMssg.style.color = 'red';
+      return;
+    }
   }
   catch(ex){
   console.log(ex);
@@ -344,6 +362,7 @@ rubricField.onblur = function() {
 
 articleField.onblur = function() {
   const articleValue = articleField.value;
+  errorArticleMssg.innerHTML = '';
   try {
     if (articleValue.length < 1) {
       let errorMsg = document.createTextNode('Введите, пожалуйста, описание сайта!');
@@ -351,7 +370,6 @@ articleField.onblur = function() {
       errorArticleMssg.style.color = 'red';
       return;
     }
-    errorArticleMssg.innerHTML = '';
   }
   catch(ex){
   console.log(ex);
