@@ -330,7 +330,7 @@ const radio3 = document.getElementById('public3');
 radio1.addEventListener('blur',radioCheck, false );
 radio2.addEventListener('blur',radioCheck, false );
 radio3.addEventListener('blur',radioCheck, false );
-function radioCheck(eo) {
+function radioCheck(eo) { 
   eo = eo || window.event;
   const publicValue = publicField.value;
   errorPublicMssg.innerHTML = '';
