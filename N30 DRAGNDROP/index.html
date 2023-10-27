@@ -13,22 +13,45 @@
 <script>
   'use strict'
   var imgElems = document.getElementsByTagName('img');
+  function getCoords(elem) {
+    const box=elem.getBoundingClientRect();
+    return {
+    left: box.left+window.pageXOffset,
+    top: box.top+window.pageYOffset
+    };
+  };
+  const coords = [];
+  for (let imgElem of imgElems) {
+    const imgElemCoords = getCoords(imgElem);
+    coords.push(imgElemCoords);
+    console.log(imgElemCoords);
+  };
+  console.log(coords);
   for (let i = (imgElems.length-1); i >= 0; i--) {
     let imgElem = imgElems[i];
-    const imgElemX = imgElem.offsetLeft;
-    const imgElemY = imgElem.offsetTop;
+    const imgElemCoords = coords[i];
+    imgElem.style.left = imgElemCoords.left + 'px';
+    imgElem.style.top = imgElemCoords.top + 'px';
     imgElem.style.position = 'absolute';
-    imgElem.style.left = imgElemX + 'px';
-    imgElem.style.top = imgElemY + 'px';
+    imgElem.onmouseover = function() {
+      imgElem.style.cursor = 'grab';
+    };
     imgElem.onmousedown = imgDrag;
-    imgElem.onmouseover = changeCursor;
   }
   /*for (let imgElem of imgElems) {
     imgElem.onmousedown = imgDrag;
+    imgElem.onmouseover = changeCursor;
+    let i = 0;
+    const imgElemCoords = coords[i];
+    imgElem.style.left = imgElemCoords.left + 'px';
+    imgElem.style.top = imgElemCoords.top + 'px';
+    imgElem.style.position = 'absolute';
+    i++;
     }*/
-  function changeCursor(eo) {
-    this.style.cursor = 'grab';
-  }
+  /*function changeCursor(eo) {
+    const self = this;
+    self.style.cursor = 'grab';
+  }*/
   function imgDrag(eo) {
     eo = eo || window.event;
     const self = this;
@@ -44,8 +67,9 @@
       self.style.top = eo.pageY - shiftY + 'px';
     }
     document.onmousemove = function(eo) {
-    moveAt(eo);
-   }
+      self.style.cursor = 'grabbing';
+      moveAt(eo);
+    }
     self.onmouseup = function() {
       self.style.cursor = 'grab';
       document.onmousemove = null;
