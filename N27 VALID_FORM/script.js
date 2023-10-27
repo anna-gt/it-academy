@@ -307,7 +307,7 @@ mailField.onblur = function() {
   }
 }
 
-rubricField.onblur = function() {
+rubricField.onchange = function() {
   const rubricValue = rubricField.value;
   errorRubricMssg.innerHTML = '';
   try {
