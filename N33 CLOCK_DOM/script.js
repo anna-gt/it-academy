@@ -108,8 +108,6 @@ function buildMyClock(eo) {
     const rotateStr = 'rotate('+angle+'rad)'; 
     hourArr.style.transform = rotateStr;
   };
-  setHourArr();
-  setInterval(setHourArr,60000);
 
   const minArr = document.createElement('div');
   clock.appendChild(minArr);
@@ -130,8 +128,6 @@ function buildMyClock(eo) {
     const rotateStr = 'rotate('+angle+'rad)'; 
     minArr.style.transform = rotateStr;
   };
-  setMinArr();
-  setInterval(setMinArr,60000);
   
   const secArr = document.createElement('div');
   clock.appendChild(secArr);
@@ -152,6 +148,11 @@ function buildMyClock(eo) {
     const rotateStr = 'rotate('+angle+'rad)'; 
     secArr.style.transform = rotateStr;
   };
-  setSecArr();
-  setInterval(setSecArr,1000);
+  function setTime() {
+    setHourArr();
+    setMinArr()
+    setSecArr();
+  }
+  setTime();
+  setInterval(setTime,1000);
 }
