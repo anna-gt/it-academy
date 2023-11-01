@@ -64,8 +64,6 @@ function buildMyClock(eo) {
   digTimeField.style.top = 30 + '%';
   digTimeField.style.transform = 'translate(-50%,-50%)';
   digTimeField.style.fontSize = digClockSize + 'px';
-  updateTime();
-  setInterval(updateTime,1000);
   function updateTime() {
     const currTime = new Date();
     const currTimeStr = formatTime(currTime);
@@ -149,6 +147,7 @@ function buildMyClock(eo) {
     secArr.style.transform = rotateStr;
   };
   function setTime() {
+    updateTime();
     setHourArr();
     setMinArr()
     setSecArr();
