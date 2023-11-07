@@ -52,7 +52,7 @@ function buildMyClock(eo) {
       context.fillStyle = 'black';
       context.font = `bold ${numsSize}px Arial`;
       if (i/10 < 1) 
-        context.fillText(i,(numCenterX - numsSize/4),(numCenterY + numsSize/3)); // если i - однозначное число, центроруем цифру по оси X таким образом
+        context.fillText(i,(numCenterX - numsSize/4),(numCenterY + numsSize/3)); // если i - однозначное число, центрируем цифру по оси X таким образом
       else
         context.fillText(i,(numCenterX - numsSize/2),(numCenterY + numsSize/3)); // если двузначное, то таким
     }
@@ -78,7 +78,43 @@ function buildMyClock(eo) {
               strVal='0'+strVal;
           return strVal;
       }
+
+      let currHours = (currTime.getHours())%12;
+      let currMin = currTime.getMinutes();
+      let currSec = currTime.getSeconds();
+      const currMs = currTime.getMilliseconds();
+
+      const angleM = partMinsSec*currMin;
+      const angleH = partHour*currHours + angleM/hours; // hours - константа, описанная в начале функции(12)
+      const angleS = partMinsSec*currSec;
+
+      const hourArrCenterX = radius + hourArrLength*Math.sin(angleH);
+      const hourArrCenterY = radius - hourArrLength*Math.cos(angleH);
+      context.strokeStyle='black';
+      context.lineWidth = hoursArrowW;
+      context.lineCap='round';
+      context.beginPath();
+      context.moveTo(radius,radius);
+      context.lineTo(hourArrCenterX,hourArrCenterY);
+      context.stroke();
+
+      const minArrCenterX = radius + minArrLength*Math.sin(angleM);
+      const minArrCenterY = radius - minArrLength*Math.cos(angleM);
+      context.lineWidth = minsArrowW;
+      context.beginPath();
+      context.moveTo(radius,radius);
+      context.lineTo(minArrCenterX,minArrCenterY);
+      context.stroke();
+
+      const secArrCenterX = radius + secArrLength*Math.sin(angleS);
+      const secArrCenterY = radius - secArrLength*Math.cos(angleS);
+      context.lineWidth = secArrowW;
+      context.beginPath();
+      context.moveTo(radius,radius);
+      context.lineTo(secArrCenterX,secArrCenterY);
+      context.stroke();
+
+      setTimeout(drawMyClock, 1010 - currMs);
     }
-    setTimeout(drawMyClock, 1000);
   }
 }

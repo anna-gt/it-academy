@@ -49,7 +49,7 @@ function buildMyClock(eo) {
 
     const numElem = document.createElementNS("http://www.w3.org/2000/svg",'text');
     if (i/10 < 1) 
-      numElem.setAttribute('x',numCenterX - numsSize/4); // если i - однозначное число, центроруем цифру по оси X таким образом
+      numElem.setAttribute('x',numCenterX - numsSize/4); // если i - однозначное число, центрируем цифру по оси X таким образом
     else 
       numElem.setAttribute('x',numCenterX - numsSize/2);  // если двузначное, то таким
     numElem.setAttribute('y',numCenterY + numsSize/3); // центрируем цифру по оси Y
