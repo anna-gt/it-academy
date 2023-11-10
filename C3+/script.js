@@ -16,15 +16,17 @@ function deepComp(x1,x2) {
     }
     return true;
   }
+  if (x1 instanceof Array || x2 instanceof Array)
+    return false;
   const objKeys1 = Object.keys(x1);
   const objKeys2 = Object.keys(x2);
-  console.log(objKeys1,objKeys2);
 
   if (objKeys1.length !== objKeys2.length) return false;
   const isObjectNan = (object) => {
     return Number.isNaN(object) || typeof object === "object";
   }
   for (let key of objKeys1) {
+    if (!objKeys2.includes(key)) return false;
     const value1 = x1[key];
     const value2 = x2[key];
     const isObjects = isObjectNan(value1) && isObjectNan(value2);
