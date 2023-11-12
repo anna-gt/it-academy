@@ -15,15 +15,131 @@
       justify-content: center;
     }
     #field {
+      position: relative;
       width: 750px;
       height: 500px;
       background-color: bisque;
     }
+    #leftPaddle {
+      position: absolute;
+      background-color: green;
+    }
+    #rightPaddle {
+      position: absolute;
+      background-color: blue;
+    }
   </style>
 </head>
 <body>
-  <div id="field"> </div>
+  <div id="field"> 
+    <div id="leftPaddle"></div>
+    <div id="rightPaddle"></div>
+    <div id="ball"></div>
+  </div>
   <script>
+    'use strict'
+    let area={
+        width : 750,
+        height : 500
+    }
+    const field = document.getElementById('field');
+    const grid = 15; // размер игровой клетки
+    const ballSize = grid;
+    const paddleHeight = ballSize*5;
+    const maxPaddleY = area.height - paddleHeight;
+    var paddleSpeed = 6;
+    var ballSpeed = 5;
+
+    const leftPaddle = {
+      x: 0,
+      y: area.height/2 - paddleHeight/2,
+      width: grid,
+      height: paddleHeight,
+      dy: 0,
+      update: function() {
+        const leftPaddleElem = document.getElementById('leftPaddle');
+        leftPaddleElem.style.width = this.width + 'px';
+        leftPaddleElem.style.height = this.height + 'px';
+        leftPaddleElem.style.left = this.x + 'px';
+        leftPaddleElem.style.top = this.y + 'px';
+      }
+    };
+    const rightPaddle = {
+      x: area.width-grid,
+      y: area.height/2 - paddleHeight/2,
+      width: grid,
+      height: paddleHeight,
+      dy: 0,
+      update: function() {
+        const rightPaddleElem = document.getElementById('rightPaddle');
+        rightPaddleElem.style.width = this.width + 'px';
+        rightPaddleElem.style.height = this.height + 'px';
+        rightPaddleElem.style.left = this.x + 'px';
+        rightPaddleElem.style.top = this.y + 'px';
+      }
+    };
+    const ball = {
+      x: area.width/2,
+      y: area.height/2,
+      width: grid,
+      height: grid,
+      dx: ballSpeed,
+      dy: -ballSpeed,
+      resetting: false
+    };
+    function collides(obj1, obj2) { // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+      return obj1.x < obj2.x + obj2.width &&
+         obj1.x + obj1.width > obj2.x &&
+         obj1.y < obj2.y + obj2.height &&
+         obj1.y + obj1.height > obj2.y;
+    }
+    function loop() {
+
+    }
+
+    document.addEventListener('keydown', function(eo) {
+      eo=eo||window.event;
+      if (eo.which === 16) {
+        leftPaddle.dy = -paddleSpeed;
+      }
+      else if (eo.which === 17) {
+        leftPaddle.dy = paddleSpeed;
+      }
+      if (eo.which === 38) {
+        rightPaddle.dy = -paddleSpeed;
+      }
+      else if (eo.which === 40) {
+        rightPaddle.dy = paddleSpeed;
+      }
+    });
+    document.addEventListener('keyup', function(eo) {
+      eo=eo||window.event;
+      if (eo.which === 16 || eo.which === 17) {
+        leftPaddle.dy = 0;
+      }
+      if (eo.which === 38 || eo.which === 40) {
+        rightPaddle.dy = 0;
+      }
+    })
+    setInterval(tick,40);
+    function tick() {
+      leftPaddle.y += leftPaddle.dy;
+      rightPaddle.y += rightPaddle.dy;
+      if (leftPaddle.y < 0) {
+        leftPaddle.y = 0;
+      }
+      else if (leftPaddle.y > maxPaddleY) {
+        leftPaddle.y = maxPaddleY;
+      }
+      if (rightPaddle.y < 0) {
+        rightPaddle.y = 0;
+      }
+      else if (rightPaddle.y > maxPaddleY) {
+        rightPaddle.y = maxPaddleY;
+      }
+      leftPaddle.update();
+      rightPaddle.update();
+    }
     
   </script>
 </body>
