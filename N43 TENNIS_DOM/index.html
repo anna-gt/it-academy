@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +13,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    #area {
+      position: relative;
     }
     #field {
       position: relative;
@@ -33,14 +36,19 @@
       background-color: red;
       border-radius: 50%;
     }
+    #counter {
+      position: absolute;
+      font-size: 40px;
+    }
     input {
       margin: 10px 0px;
     }
   </style>
 </head>
 <body>
-  <div>
+  <div id="area">
     <input type="button" value="Старт!" id = "startBttn">
+    <div id="counter"></div>
     <div id="field"> 
       <div id="leftPaddle"></div>
       <div id="rightPaddle"></div>
@@ -53,20 +61,36 @@
         width : 750,
         height : 500
     }
-    const field = document.getElementById('field');
     const grid = 15; // размер игровой клетки
     const ballSize = grid*2;
     const paddleHeight = grid*7;
     const maxPaddleY = area.height - paddleHeight;
+    const counterSize = grid*4;
     var paddleSpeed = 6;
     var ballSpeed = 5;
+    const counterArea = document.getElementById('counter');
+    let leftCount = 0;
+    let rightCount = 0;
 
+    const counter = {
+      x: area.width/2 - counterSize/2,
+      y: 0,
+      create: function() {
+        counterArea.style.width = counterSize + 'px';
+        counterArea.style.left = this.x + 'px';
+        counterArea.style.top = this.y + 'px';
+      },
+      update: function() {
+        counterArea.innerHTML = `${leftCount}:${rightCount}`;
+      }
+    }
     const leftPaddle = {
       x: 0,
       y: area.height/2 - paddleHeight/2,
       width: grid,
       height: paddleHeight,
       dy: 0,
+      goal: false,
       update: function() {
         const leftPaddleElem = document.getElementById('leftPaddle');
         leftPaddleElem.style.width = this.width + 'px';
@@ -81,6 +105,7 @@
       width: grid,
       height: paddleHeight,
       dy: 0,
+      goal: false,
       update: function() {
         const rightPaddleElem = document.getElementById('rightPaddle');
         rightPaddleElem.style.width = this.width + 'px';
@@ -96,7 +121,6 @@
       y: area.height/2 - ballSize/2,
       dx: 0,
       dy: 0,
-      resetting: false,
       update: function() {
         const ballElem = document.getElementById('ball');
         ballElem.style.width = this.width + 'px';
@@ -165,9 +189,18 @@
         ball.y = area.height - ball.height;
         ball.dy *= -1;
       }
-      if (ball.x >= (area.width - ball.width) || ball.x <= 0) {
+      if (ball.x >= (area.width - ball.width) || ball.x <= 0 ) {
         ball.dy = 0;
         ball.dx = 0;
+      }
+      // при нахождении мяча между указанных координат засчитывается гол
+      if (ball.x < grid/3 && ball.x > 0) {
+        console.log('left goal');
+        rightCount += 1;
+      }
+      else if (ball.x > (area.width - ball.width - grid/3) && ball.x < (area.width - ball.width)) {
+        console.log('right goal');
+        leftCount += 1;
       }
       if (collides(ball, leftPaddle)){
         console.log('left collision');
@@ -183,14 +216,35 @@
       var startBttn = document.getElementById('startBttn');
       startBttn.onclick = function() {
         console.log('start');
+        ball.dx = 0;
+        ball.dy = 0;
         ball.x = area.width/2 - ball.width/2;
         ball.y = area.height/2 - ball.height/2;
-        ball.dx = ballSpeed;
-        ball.dy = -ballSpeed;
+
+        function randomDiap(n,m) {
+         return Math.floor(Math.random()*(m-n+1))+n;
+        }
+        // получение рандомного значения множителя скорости в диапазоне от 0.8 до 1
+        let dxVal = randomDiap(0.8,1);
+        let dyVal = randomDiap(0.8,1);
+
+        function getFandomDirect(x) {
+          if (Math.round(Math.random()))  // округление рандомного значения до 0(false) или 1(true)
+            return x;
+          else 
+            return -x;
+        }
+        // получение направления движения 
+        let dxStart = getFandomDirect(dxVal);
+        let dyStart = getFandomDirect(dyVal)
+
+        ball.dx = dxStart*ballSpeed;
+        ball.dy = dyStart*ballSpeed;
       }
       ball.update();
+      counter.update();
     }
-    ball.update();
+    counter.create();
     
   </script>
 </body>
