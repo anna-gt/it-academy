@@ -202,6 +202,8 @@
         console.log('right goal');
         leftCount += 1;
       }
+
+      // при столкновении с ракеткой мяч меняет напрвление на противоположное
       if (collides(ball, leftPaddle)){
         console.log('left collision');
         ball.dx *= -1;
@@ -212,40 +214,39 @@
         ball.dx *= -1;
         ball.x = rightPaddle.x - ball.width;
       }
-
-      var startBttn = document.getElementById('startBttn');
-      startBttn.onclick = function() {
-        console.log('start');
-        ball.dx = 0;
-        ball.dy = 0;
-        ball.x = area.width/2 - ball.width/2;
-        ball.y = area.height/2 - ball.height/2;
-
-        function randomDiap(n,m) {
-         return Math.floor(Math.random()*(m-n+1))+n;
-        }
-        // получение рандомного значения множителя скорости в диапазоне от 0.8 до 1
-        let dxVal = randomDiap(0.8,1);
-        let dyVal = randomDiap(0.8,1);
-
-        function getFandomDirect(x) {
-          if (Math.round(Math.random()))  // округление рандомного значения до 0(false) или 1(true)
-            return x;
-          else 
-            return -x;
-        }
-        // получение направления движения 
-        let dxStart = getFandomDirect(dxVal);
-        let dyStart = getFandomDirect(dyVal)
-
-        ball.dx = dxStart*ballSpeed;
-        ball.dy = dyStart*ballSpeed;
-      }
+      
       ball.update();
       counter.update();
     }
     counter.create();
-    
+    var startBttn = document.getElementById('startBttn');
+    startBttn.onclick = function() {
+      console.log('start');
+      ball.dx = 0;
+      ball.dy = 0;
+      ball.x = area.width/2 - ball.width/2;
+      ball.y = area.height/2 - ball.height/2;
+
+      function randomDiap(n,m) {
+       return Math.floor(Math.random()*(m-n+1))+n;
+      }
+      // получение рандомного значения множителя скорости в диапазоне от 0.8 до 1
+      let dxVal = randomDiap(0.8,1);
+      let dyVal = randomDiap(0.8,1);
+
+      function getFandomDirect(x) {
+        if (Math.round(Math.random()))  // округление рандомного значения до 0(false) или 1(true)
+          return x;
+        else 
+          return -x;
+      }
+      // получение направления движения 
+      let dxStart = getFandomDirect(dxVal);
+      let dyStart = getFandomDirect(dyVal)
+
+      ball.dx = dxStart*ballSpeed;
+      ball.dy = dyStart*ballSpeed;
+    }
   </script>
 </body>
 </html>
