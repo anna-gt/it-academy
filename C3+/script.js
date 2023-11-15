@@ -18,6 +18,7 @@ function deepComp(x1,x2) {
   }
   if (x1 instanceof Array || x2 instanceof Array)
     return false;
+
   const objKeys1 = Object.keys(x1);
   const objKeys2 = Object.keys(x2);
 
@@ -26,7 +27,7 @@ function deepComp(x1,x2) {
     return Number.isNaN(object) || typeof object === "object";
   }
   for (let key of objKeys1) {
-    if (!objKeys2.includes(key)) return false;
+    if (!(key in x2)) return false;
     const value1 = x1[key];
     const value2 = x2[key];
     const isObjects = isObjectNan(value1) && isObjectNan(value2);
