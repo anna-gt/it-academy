@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TENNIS SVG</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <svg id="field" width="750" height="550" xmlns='http://www.w3.org/2000/svg'>
+  </svg>
+  <script>
+    'use strict'
+    const fieldElem = document.getElementById('field');
+    let area={
+        x: 0,
+        y: 110,
+        color: '#ffe4c4',
+        width : 750,
+        height : 500,
+        create: function() {
+          const areaElem = document.createElementNS("http://www.w3.org/2000/svg",'rect');
+          areaElem.setAttribute('x', this.x);
+          areaElem.setAttribute('y', this.y);
+          areaElem.setAttribute('width', this.width);
+          areaElem.setAttribute('height', this.height);
+          areaElem.setAttribute('fill', this.color);
+          fieldElem.appendChild(areaElem);
+        }
+    }
+    const paddleWidth = 15;
+    const ballSize = 30;
+    const paddleHeight = 100;
+    const maxPaddleY = area.height - paddleHeight;
+    const counterSize = 60;
+    var paddleSpeed = 6;
+    var ballSpeed = 5;
+    let leftCount = 0;
+    let rightCount = 0;
+
+    const counterField = document.createElementNS("http://www.w3.org/2000/svg",'text');
+    const counter = {
+      x: area.width/2 - counterSize/2,
+      y: 100,
+      fontSize: 40,
+      create: function() {
+        counterField.setAttribute('x',this.x);
+        counterField.setAttribute('y',this.y);
+        counterField.style.fill = 'black';
+        counterField.style.fontSize = this.fontSize;
+        fieldElem.appendChild(counterField);
+      },
+      update: function() {
+        counterField.textContent = `${leftCount}:${rightCount}`;
+      }
+    }
+    area.create();
+    counter.create();
+    counter.update();
+  </script>
+</body>
+</html>
