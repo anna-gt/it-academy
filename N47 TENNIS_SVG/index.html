@@ -19,6 +19,9 @@
       align-items: center;
       justify-content: space-around;
     }
+    #button:hover {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -148,8 +151,6 @@
       x: area.width/2,
       y: area.height/2,
       r: ballSize/2,
-      width: ballSize,
-      height: ballSize,
       dx: 0,
       dy: 0,
       color: 'red',
@@ -164,11 +165,13 @@
       }
     }
 
-    function collides(obj1, obj2) { // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-      return obj1.x + obj1.r < obj2.x + obj2.width &&
-         obj1.x + obj1.r + obj1.width/2 > obj2.x &&
-         obj1.y - obj1.r < obj2.y + obj2.height &&
-         obj1.y - obj1.r + obj1.height/2 > obj2.y;
+    // функция для определения столкновения двух объектов, 
+    // при этом obj2 - окружность с центром в координатах x, y и радиусом r
+    function collides(obj1, obj2) { 
+      return obj1.x < obj2.x + obj2.r &&
+         obj1.x + obj1.width  > obj2.x - obj2.r &&
+         obj1.y < obj2.y + obj2.r &&
+         obj1.y + obj1.height  > obj2.y - obj2.r;
     }
 
     document.addEventListener('keydown', function(eo) {
@@ -199,9 +202,9 @@
     area.create();
     button.create();
     counter.create();
+    ball.create();
     leftPaddle.create();
     rightPaddle.create();
-    ball.create();
 
     buttonSVG.onclick = function() {
       ball.dx = 0;
@@ -274,12 +277,12 @@
       }
 
       // при столкновении с ракеткой мяч меняет напрвление на противоположное
-      if (collides(ball, leftPaddle)){
+      if (collides(leftPaddle, ball)){
         console.log('left collision');
         ball.dx *= -1;
         ball.x = leftPaddle.width + ball.r;
       }
-      else if (collides(ball, rightPaddle)) {
+      else if (collides(rightPaddle, ball)) {
         console.log('right collision');
         ball.dx *= -1;
         ball.x = rightPaddle.x - ball.r;
