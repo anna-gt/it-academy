@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TENNIS_CANVAS</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #cap {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+    #counter {
+      font-size: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div id="cap">
+      <input type="button" value="Старт!" id = "startBttn">
+      <div id="counter"></div>
+    </div>
+    <canvas id="field" width="750" height="500"></canvas>
+  </div>
+  <script>
+    'use strict'
+    const counterArea = document.getElementById('counter');
+    let leftCount = 0;
+    let rightCount = 0;
+
+    var field = document.getElementById('field');
+    var context = field.getContext('2d');
+
+    const area = {
+      x: 0,
+      y: 0,
+      color: '#ffe4c4',
+      width : 750,
+      height : 500,
+      update: function() {
+        context.fillStyle = this.color;
+        context.fillRect(this.x, this.y, this.width, this.height)
+      }
+    }
+
+    const paddleWidth = 15;
+    const ballSize = 30;
+    const paddleHeight = 100;
+    const maxPaddleY = area.height - paddleHeight;
+    var paddleSpeed = 6;
+    var ballSpeed = 5;
+
+    const leftPaddle = {
+      x: 0,
+      y: area.height/2 - paddleHeight/2,
+      width: paddleWidth,
+      height: paddleHeight,
+      dy: 0,
+      color: 'green',
+      update: function() {
+        context.fillStyle = this.color;
+        context.fillRect(this.x, this.y, this.width, this.height)
+      }
+    }
+    const rightPaddle = {
+      x: area.width - paddleWidth,
+      y: area.height/2 - paddleHeight/2,
+      width: paddleWidth,
+      height: paddleHeight,
+      dy: 0,
+      color: 'blue',
+      update: function() {
+        context.fillStyle = this.color;
+        context.fillRect(this.x, this.y, this.width, this.height)
+      }
+    }
+
+    const ball = {
+      x: area.width/2,
+      y: area.height/2,
+      r: ballSize/2,
+      dx: 0,
+      dy: 0,
+      color: 'red',
+      update: function() {
+        context.fillStyle = this.color;
+        context.beginPath();
+        context.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
+        context.fill();
+      }
+    }
+
+    // функция для определения столкновения двух объектов, 
+    // при этом obj2 - окружность с центром в координатах x, y и радиусом r
+    function collides(obj1, obj2) { 
+      return obj1.x < obj2.x + obj2.r &&
+         obj1.x + obj1.width  > obj2.x - obj2.r &&
+         obj1.y < obj2.y + obj2.r &&
+         obj1.y + obj1.height  > obj2.y - obj2.r;
+    }
+
+    document.addEventListener('keydown', function(eo) {
+      eo=eo||window.event;
+      if (eo.which === 16) {
+        leftPaddle.dy = -paddleSpeed;
+      }
+      else if (eo.which === 17) {
+        leftPaddle.dy = paddleSpeed;
+      }
+      if (eo.which === 38) {
+        rightPaddle.dy = -paddleSpeed;
+      }
+      else if (eo.which === 40) {
+        rightPaddle.dy = paddleSpeed;
+      }
+    });
+    document.addEventListener('keyup', function(eo) {
+      eo=eo||window.event;
+      if (eo.which === 16 || eo.which === 17) {
+        leftPaddle.dy = 0;
+      }
+      if (eo.which === 38 || eo.which === 40) {
+        rightPaddle.dy = 0;
+      }
+    })
+
+    const button = document.getElementById('startBttn');
+    button.onclick = function() {
+      ball.dx = 0;
+      ball.dy = 0;
+      ball.x = area.width/2;
+      ball.y = area.height/2;
+      function randomDiap(n,m) {
+       return Math.floor(Math.random()*(m-n+1))+n;
+      }
+      // получение рандомного значения множителя скорости в диапазоне от 0.8 до 1
+      let dxVal = randomDiap(0.8,1);
+      let dyVal = randomDiap(0.8,1);
+
+      function getFandomDirect(x) {
+        if (Math.round(Math.random()))  // округление рандомного значения до 0(false) или 1(true)
+          return x;
+        else 
+          return -x;
+      }
+      // получение направления движения 
+      let dxStart = getFandomDirect(dxVal);
+      let dyStart = getFandomDirect(dyVal)
+
+      ball.dx = dxStart*ballSpeed;
+      ball.dy = dyStart*ballSpeed;
+    }
+
+    setInterval(tick,40);
+    function tick() {
+      counterArea.innerHTML = `${leftCount}:${rightCount}`;
+      context.clearRect(0,0,750,500);
+
+      area.update();
+
+      leftPaddle.y += leftPaddle.dy;
+      rightPaddle.y += rightPaddle.dy;
+
+      leftPaddle.update();
+      rightPaddle.update();
+
+      if (leftPaddle.y < area.y) {
+        leftPaddle.y = area.y;
+      }
+      else if (leftPaddle.y > maxPaddleY) {
+        leftPaddle.y = maxPaddleY;
+      }
+      if (rightPaddle.y < area.y) {
+        rightPaddle.y = area.y;
+      }
+      else if (rightPaddle.y > maxPaddleY) {
+        rightPaddle.y = maxPaddleY;
+      }
+
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      ball.update();
+
+      if (ball.y < (area.y + ball.r)) {
+        ball.y = area.y + ball.r;
+        ball.dy *= -1;
+      }
+      else if (ball.y > (area.height - ball.r)) {
+        ball.y = area.height - ball.r;
+        ball.dy *= -1;
+      }
+      if (ball.x > (area.width - ball.r) ) {
+        ball.x = (area.width - ball.r);
+        leftCount += 1;
+        ball.dy = 0;
+        ball.dx = 0;
+      }
+      else if (ball.x < (area.x + ball.r)) {
+        ball.x = area.x + ball.r;
+        rightCount += 1;
+        ball.dy = 0;
+        ball.dx = 0;
+      }
+
+      // при столкновении с ракеткой мяч меняет напрвление на противоположное
+      if (collides(leftPaddle, ball)){
+        console.log('left collision');
+        ball.dx *= -1;
+        ball.x = leftPaddle.width + ball.r;
+      }
+      else if (collides(rightPaddle, ball)) {
+        console.log('right collision');
+        ball.dx *= -1;
+        ball.x = rightPaddle.x - ball.r;
+      }
+ 
+    }
+
+  </script> 
+</body>
+</html>
