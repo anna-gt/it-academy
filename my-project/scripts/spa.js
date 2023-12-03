@@ -11,7 +11,7 @@
   window.onhashchange=switchToStateFromURLHash;
   // текущее состояние приложения
   // это Model из MVC
-  var SPAState={};
+  var SPAState = {};
   // вызывается при изменении закладки УРЛа
   // а также при первом открытии страницы
   // читает новое состояние приложения из закладки УРЛа
@@ -21,7 +21,7 @@
   // частей кода в зависимости от формы URLа
   // "роутинг" и есть "контроллер" из MVC - управление приложением через URL
   function switchToStateFromURLHash() {
-    var URLHash=window.location.hash;
+    var URLHash = window.location.hash;
 
     // убираем из закладки УРЛа решётку
     // (по-хорошему надо ещё убирать восклицательный знак, если есть)
@@ -38,22 +38,27 @@
     console.log(SPAState);
     // обновляем вариабельную часть страницы под текущее состояние
     // это реализация View из MVC - отображение состояния модели в HTML-код
-    var pageHTML="";
+    var pageHTML = "";
     switch ( SPAState.pagename ) {
       case 'menu':
         pageHTML+="<div class='menu-wrapper'><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='rules'>Правила</a></li><li class='menu-item'><a href='records'>Таблица рекордов</a></li></ul></div>";
+        document.querySelector('.wrapper').innerHTML = pageHTML;
         break;
       case 'game':
-        pageHTML+="<div class='game-wrapper'><canvas></canvas></div>";
+        pageHTML+="<div class='game-wrapper'><canvas id='game' width='100' height='100'></canvas></div>";
+        document.querySelector('.wrapper').innerHTML = pageHTML;
+        ResizeCanvas();
+        startGame();
         break;
       case 'records':
         pageHTML+="<div class='records-wrapper'><h3>Лучшие результаты</h3></div>";
+        document.querySelector('.wrapper').innerHTML = pageHTML;
         break;
       case 'rules':
         pageHTML+="<div class='rules-wrapper'><h3>Правила игры</h3></div>";
+        document.querySelector('.wrapper').innerHTML = pageHTML;
         break;
     }
-    document.querySelector('.wrapper').innerHTML=pageHTML;
   }
 // устанавливает в закладке УРЛа новое состояние приложения
   // и затем устанавливает+отображает это состояние
