@@ -36,6 +36,7 @@ window.addEventListener('resize',BodyResized,false);
 
   function startGame() {
     // задаем переменные 
+    var score = 0;
     var canvas = document.getElementById('game');
     var context = canvas.getContext('2d');
     var width = canvas.width;
@@ -72,7 +73,9 @@ window.addEventListener('resize',BodyResized,false);
       self.cells = [];
       self.cells[0] = {
         x: self.x,
-        y: self.y
+        y: self.y,
+        dx: self.dx,
+        dy: self.dy
       };
       // Стартовая длина змейки — 4 клеточки
       self.maxCells = 4;
@@ -100,7 +103,7 @@ window.addEventListener('resize',BodyResized,false);
         }
         // Продолжаем двигаться в выбранном направлении. Голова всегда впереди, 
         // поэтому добавляем её координаты в начало массива, который отвечает за всю змейку.
-        self.cells.unshift({ x: self.x, y: self.y });
+        self.cells.unshift({ x: self.x, y: self.y, dx: self.dx, dy: self.dy });
         // Сразу после этого удаляем последний элемент из массива змейки, 
         // потому что она движется и постоянно особождает клетки после себя
         if (self.cells.length > self.maxCells) {
@@ -141,7 +144,7 @@ window.addEventListener('resize',BodyResized,false);
       // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. 
       // Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. 
       // Было 60 кадров в секунду, станет 15.
-      requestAnimationFrame(loop);
+      var gameLoop = requestAnimationFrame(loop);
       // Игровой код выполнится только один раз из восьми, в этом и суть замедления кадров, 
       // а пока переменная count меньше восьми, код выполняться не будет.
       if (++count < 8) {
@@ -149,6 +152,15 @@ window.addEventListener('resize',BodyResized,false);
       }
       // Обнуляем переменную скорости
       count = 0;
+      // описываем функцию gameOver
+      function gameOver() {
+        cancelAnimationFrame(gameLoop);
+        localStorage.setItem('bestScore',score);
+      }
+      // Обновляем счетчики на экране
+      var bestScore = localStorage.getItem('bestScore'); 
+      document.getElementById('current-score').innerHTML = score;
+      document.getElementById('best-score').innerHTML = bestScore?bestScore:score;
       // Очищаем игровое поле
       context.clearRect(0, 0, canvas.width, canvas.height);
       snake.update();
@@ -157,18 +169,39 @@ window.addEventListener('resize',BodyResized,false);
       context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
       // Одно движение змейки — один новый нарисованный квадратик 
       context.fillStyle = snakeColor;
+      context.strokeStyle = snakeColor;
       // Обрабатываем каждый элемент змейки
       snake.cells.forEach(function (cell, index) {
         // нулевой элемент змейки - голова - крупнее остальных элементов
         if (index == 0) {
-          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.8,true);
+          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.75,true);
+        };
+        // последний элемент - хвост - немного меньше остальных
+        if (index == snake.maxCells-1) {
+          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.62,true);
         }
-          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.65,true);
-        //context.fillRect(cell.x, cell.y, grid, grid);
+          /*context.lineWidth = grid;
+          context.lineCap = 'round';
+          context.beginPath();
+          if (cell.dx != 0) {
+            context.moveTo(cell.x,cell.y+grid/2);
+            context.lineTo(cell.x+grid,cell.y+grid/2);
+            context.stroke();
+          }
+          if (cell.dy != 0) {
+            context.moveTo(cell.x+grid/2,cell.y);
+            context.lineTo(cell.x+grid/2,cell.y+grid);
+            context.stroke();
+          }
+          context.fillRect(cell.x, cell.y, grid, grid);
+        */
+         else drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.65,true);
+        // context.fillRect(cell.x, cell.y, grid, grid);
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
           // увеличиваем длину змейки
           snake.maxCells++;
+          score++;
           apple.update();
           }
           // Проверяем, не столкнулась ли змея сама с собой
@@ -177,6 +210,7 @@ window.addEventListener('resize',BodyResized,false);
           // Если такие клетки есть — начинаем игру заново
           if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
             // Задаём стартовые параметры основным переменным
+            gameOver();
             snake.restart();
             apple.update();
           }

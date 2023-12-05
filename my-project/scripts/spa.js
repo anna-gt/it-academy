@@ -60,7 +60,7 @@
         document.getElementById('level-3').addEventListener('click',setLevel3);
         break;
       case 'game':
-        pageHTML+="<div class='game-wrapper'><canvas id='game' width='100' height='100'></canvas></div>";
+        pageHTML+="<div class='game-wrapper'><div class='score'><span>Счет : <span id='current-score'></span></span><span>Лучший счет : <span id='best-score'></span></span></div><canvas id='game' width='100' height='100'></canvas></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         ResizeCanvas();
         startGame();

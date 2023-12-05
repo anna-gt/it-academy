@@ -86,3 +86,9 @@ body {
 canvas {
   border: 1px solid white;
 }
+.score {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  margin-bottom: 5px;
+}
