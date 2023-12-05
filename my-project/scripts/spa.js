@@ -3,6 +3,7 @@
  // в закладке УРЛа будем хранить разделённые подчёркиваниями слова
   // #Game - страница с игрой
   // #Rules - правила игры
+  // #levels - выбор уровня сложности
   // #Records - таблица рекордов
 
   // отслеживаем изменение закладки в УРЛе
@@ -41,8 +42,22 @@
     var pageHTML = "";
     switch ( SPAState.pagename ) {
       case 'menu':
-        pageHTML+="<div class='menu-wrapper'><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='rules'>Правила</a></li><li class='menu-item'><a href='records'>Таблица рекордов</a></li></ul></div>";
+        pageHTML+="<div class='menu-wrapper'><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='records'>Таблица рекордов</a></li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
+        var levelSpan = document.getElementById('level-point');
+        if (difficultyLevel === 1) 
+          levelSpan.innerHTML = 'низкий';
+        else if (difficultyLevel === 2) 
+          levelSpan.innerHTML = 'средний';
+        else if (difficultyLevel === 3) 
+          levelSpan.innerHTML = 'высокий';
+        break;
+      case 'levels':
+        pageHTML+="<div class='levels-wrapper'><div id='arrow-back'><a href='#menu'>&LT назад</a></div><ul><li class='menu-item'><a href='#menu' id='level-1'>Низкий</a></li><li class='menu-item' id='level-2'><a href='#menu'>Средний</a></li><li class='menu-item' ><a href='#menu' id='level-3'>Высокий</a></li></ul></div>";
+        document.querySelector('.wrapper').innerHTML = pageHTML;
+        document.getElementById('level-1').addEventListener('click',setLevel1);
+        document.getElementById('level-2').addEventListener('click',setLevel2);
+        document.getElementById('level-3').addEventListener('click',setLevel3);
         break;
       case 'game':
         pageHTML+="<div class='game-wrapper'><canvas id='game' width='100' height='100'></canvas></div>";
@@ -80,6 +95,10 @@
 
   function switchToGamePage() {
     switchToState( { pagename:'game' } );
+  }
+
+  function switchToLevelsPage() {
+    switchToState( { pagename:'levels' } );
   }
 
   function switchToRulesPage() {

@@ -21,6 +21,18 @@ window.addEventListener('resize',BodyResized,false);
   function randomDiap(n,m) {
     return Math.floor(Math.random()*(m-n+1))+n;
   }
+  // уровни сложности: 1 - низкий(по умолчанию), 2 - средний, 3 - высокий
+  var difficultyLevel = 1;
+  function setLevelFunc(level) {
+    function setLevel() {
+      difficultyLevel = level;
+    }
+    return setLevel
+  }
+  // строим функции для установки уровней
+  var setLevel1 = setLevelFunc(1);
+  var setLevel2 = setLevelFunc(2);
+  var setLevel3 = setLevelFunc(3);
 
   function startGame() {
     // задаем переменные 
@@ -32,6 +44,18 @@ window.addEventListener('resize',BodyResized,false);
     var grid = width/25;
     // Служебная переменная, которая отвечает за скорость змейки
     var count = 0;
+    var snakeColor = '#62cafe';
+
+    function drawCircle (x, y, radius, fillCircle) {
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2, false);
+      if (fillCircle) {
+        context.fill();
+      } else {
+        context.stroke();
+      }
+    };
+
     // конструктор класса змеек
     function SnakeType() {
       // спасаем this в self
@@ -52,7 +76,10 @@ window.addEventListener('resize',BodyResized,false);
       };
       // Стартовая длина змейки — 4 клеточки
       self.maxCells = 4;
-
+      self.stop = function() {
+        self.dx = 0;
+        self.dy = 0;
+      }
       self.update = function() {
         // Двигаем змейку с нужной скоростью
         self.x += self.dx;
@@ -115,9 +142,9 @@ window.addEventListener('resize',BodyResized,false);
       // Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. 
       // Было 60 кадров в секунду, станет 15.
       requestAnimationFrame(loop);
-      // Игровой код выполнится только один раз из четырёх, в этом и суть замедления кадров, 
-      // а пока переменная count меньше четырёх, код выполняться не будет.
-      if (++count < 4) {
+      // Игровой код выполнится только один раз из восьми, в этом и суть замедления кадров, 
+      // а пока переменная count меньше восьми, код выполняться не будет.
+      if (++count < 8) {
         return;
       }
       // Обнуляем переменную скорости
@@ -129,12 +156,15 @@ window.addEventListener('resize',BodyResized,false);
       context.fillStyle = 'red';
       context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
       // Одно движение змейки — один новый нарисованный квадратик 
-      context.fillStyle = 'green';
+      context.fillStyle = snakeColor;
       // Обрабатываем каждый элемент змейки
       snake.cells.forEach(function (cell, index) {
-        // Чтобы создать эффект клеточек, делаем зелёные квадратики меньше на один пиксель,
-        // чтобы вокруг них образовалась чёрная граница
-        context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+        // нулевой элемент змейки - голова - крупнее остальных элементов
+        if (index == 0) {
+          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.8,true);
+        }
+          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.65,true);
+        //context.fillRect(cell.x, cell.y, grid, grid);
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
           // увеличиваем длину змейки
