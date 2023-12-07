@@ -16,6 +16,13 @@ window.addEventListener('resize',BodyResized,false);
     canvas.height = NewCanvasHeight;
     //ReDrawCanvas(NewCanvasWidth/DrawCanvasWidth);
   }
+  // функция для определения столкновения двух объектов
+  function collides(obj1, obj2) { // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+    return obj1.x < obj2.x + obj2.width &&
+       obj1.x + obj1.width > obj2.x &&
+       obj1.y < obj2.y + obj2.height &&
+       obj1.y + obj1.height > obj2.y;
+  }
 
   // получение целого случайного числа в заданном диапазоне
   function randomDiap(n,m) {
@@ -35,17 +42,38 @@ window.addEventListener('resize',BodyResized,false);
   var setLevel3 = setLevelFunc(3);
 
   function startGame() {
+    const preloadedImagesH={}; // ключ - имя предзагруженного изображения
+    function preloadImage(fn) {
+        // если такое изображение уже предзагружалось - ничего не делаем
+        if ( fn in preloadedImagesH )
+            return;
+        // предзагружаем - создаём невидимое изображение
+        const img=new Image();
+        img.src=fn; // загрузка начинается
+        // запоминаем, что изображение уже предзагружалось
+        preloadedImagesH[fn]=true;
+    }
+    preloadImage('images/apple.png');
+    preloadImage('images/snake1.png');
     // задаем переменные 
     var score = 0;
     var canvas = document.getElementById('game');
     var context = canvas.getContext('2d');
     var width = canvas.width;
     var height = canvas.height;
+    var food;
+    var gameStat = 1; // 1 - игра идет, 2 - пауза
     // Размер одной клеточки на поле — 1/25 часть поля
     var grid = width/25;
     // Служебная переменная, которая отвечает за скорость змейки
     var count = 0;
-    var snakeColor = '#62cafe';
+    var color1 = '#12B8FF'; // Deep sky blue
+    var color2 = '#01DC03'; // Vibrant green
+    var color3 = '#FFE62D'; // Canary
+    var color4 = '#FD4499'; // Rose bonbon
+    var color5 = '#DF19FB'; // Phlox
+    var color6 = '#2F46FA'; // Blue orchid
+    var wallColor = 'white';
 
     function drawCircle (x, y, radius, fillCircle) {
       context.beginPath();
@@ -64,6 +92,8 @@ window.addEventListener('resize',BodyResized,false);
       // Начальные координаты
       self.x = grid*10;
       self.y = grid*10;
+      self.width = grid;
+      self.height = grid;
       // Скорость змейки — в каждом новом кадре змейка смещается по оси Х или У. 
       // На старте будет двигаться горизонтально, поэтому скорость по оси  У равна нулю.
       self.speed = grid;
@@ -103,12 +133,15 @@ window.addEventListener('resize',BodyResized,false);
         }
         // Продолжаем двигаться в выбранном направлении. Голова всегда впереди, 
         // поэтому добавляем её координаты в начало массива, который отвечает за всю змейку.
-        self.cells.unshift({ x: self.x, y: self.y, dx: self.dx, dy: self.dy });
+        self.cells.unshift({ x: self.x, y: self.y, dx: self.dx, dy: self.dy, width: self.width, height: self.height });
         // Сразу после этого удаляем последний элемент из массива змейки, 
         // потому что она движется и постоянно особождает клетки после себя
         if (self.cells.length > self.maxCells) {
           self.cells.pop();
         }
+      }
+      self.crop = function() {
+        self.cells.shift();
       }
       self.restart = function() {
         self.x = grid * 10;
@@ -127,6 +160,8 @@ window.addEventListener('resize',BodyResized,false);
       // Начальные координаты яблока
       self.x = grid*5;
       self.y = grid*5;
+      self.width = grid;
+      self.height = grid;
       // Рисуем новое яблочко
       // Помним, что холст разбит на ячейки — 25 в каждую сторону
        // Ставим яблочко в случайное место
@@ -135,9 +170,97 @@ window.addEventListener('resize',BodyResized,false);
         self.y = randomDiap(1, 25) * grid;
        } 
     };
-    // создаем яблоко и змейку
+
+    // конструктор класса стен с окнами
+    // стена собирается из 8 частей по периметру(для уровня сложности 2)
+    function WallWithWindows() {
+      const self = this;
+      self.part1 = {
+        x: 0,
+        y: 0,
+        width: canvas.width/3,
+        height: grid
+      };
+      self.part2 = {
+        x: canvas.width/3*2,
+        y: 0,
+        width: canvas.width/3,
+        height: grid
+      };
+      self.part3 = {
+        x: canvas.width-grid,
+        y: grid,
+        width: grid,
+        height: canvas.height/3-grid
+      };
+      self.part4 = {
+        x: canvas.width-grid,
+        y: canvas.height/3*2,
+        width: grid,
+        height: canvas.height/3
+      };
+      self.part5 = {
+        x: canvas.width/3*2,
+        y: canvas.height-grid,
+        width: canvas.width/3-grid,
+        height: grid
+      };
+      self.part6 = {
+        x: grid,
+        y: canvas.height-grid,
+        width: canvas.width/3-grid,
+        height: grid
+      };
+      self.part7 = {
+        x: 0,
+        y: canvas.height/3*2,
+        width: grid,
+        height: canvas.height/3
+      };
+      self.part8 = {
+        x: 0,
+        y: grid,
+        width: grid,
+        height: canvas.height/3-grid
+      };
+    }
+    // конструктор класса сплошной стены
+    function WallType() {
+      const self = this;
+      self.part1 = {
+        x: 0,
+        y: 0,
+        width: canvas.width,
+        height: grid
+      };
+      self.part2 = {
+        x: canvas.width-grid,
+        y: grid,
+        width: grid,
+        height: canvas.height - grid*2
+      };
+      self.part3 = {
+        x: 0,
+        y:canvas.width-grid,
+        width: canvas.width,
+        height: grid
+      };
+      self.part4 = {
+        x: 0,
+        y: grid,
+        width: grid,
+        height: canvas.height - grid*2
+      };
+    }
+
+    // создаем яблоко, змейку, стены
     var snake = new SnakeType;
     var apple = new AppleType;
+    var windowWall = new WallWithWindows;
+    var wall = new WallType;
+    // если уровень сложности не 1 - убираем границу поля, вместо этого будут стены
+    if (difficultyLevel != 1) 
+      document.querySelector('canvas').style.border = 'none';
 
     // Игровой цикл — основной процесс, внутри которого будет всё происходить
     function loop() {
@@ -163,40 +286,37 @@ window.addEventListener('resize',BodyResized,false);
       document.getElementById('best-score').innerHTML = bestScore?bestScore:score;
       // Очищаем игровое поле
       context.clearRect(0, 0, canvas.width, canvas.height);
-      snake.update();
+      if (gameStat === 1) 
+        snake.update();
       // Рисуем еду — красное яблоко
-      context.fillStyle = 'red';
-      context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+      food = new Image();
+      food.src = "images/apple.png";
+      context.shadowBlur = 0;
+      context.drawImage(food, apple.x, apple.y, apple.width, apple.height);
+      //context.fillStyle = 'red';
+      //context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
       // Одно движение змейки — один новый нарисованный квадратик 
-      context.fillStyle = snakeColor;
-      context.strokeStyle = snakeColor;
       // Обрабатываем каждый элемент змейки
       snake.cells.forEach(function (cell, index) {
-        // нулевой элемент змейки - голова - крупнее остальных элементов
-        if (index == 0) {
-          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.75,true);
-        };
-        // последний элемент - хвост - немного меньше остальных
-        if (index == snake.maxCells-1) {
-          drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.62,true);
-        }
-          /*context.lineWidth = grid;
-          context.lineCap = 'round';
-          context.beginPath();
-          if (cell.dx != 0) {
-            context.moveTo(cell.x,cell.y+grid/2);
-            context.lineTo(cell.x+grid,cell.y+grid/2);
-            context.stroke();
-          }
-          if (cell.dy != 0) {
-            context.moveTo(cell.x+grid/2,cell.y);
-            context.lineTo(cell.x+grid/2,cell.y+grid);
-            context.stroke();
-          }
-          context.fillRect(cell.x, cell.y, grid, grid);
-        */
-         else drawCircle((cell.x+grid/2),(cell.y+grid/2),grid*0.65,true);
-        // context.fillRect(cell.x, cell.y, grid, grid);
+        if (index == 0) 
+          context.fillStyle = color1;
+        else if (index == 1)
+          context.fillStyle = color2;
+        else if (index % 3 === 0)
+          context.fillStyle = color5;
+        else if (index % 4 === 0)
+          context.fillStyle = color4;
+        else if (index % 5 === 0)
+          context.fillStyle = color6;
+        else if (index % 7 === 0)
+          context.fillStyle = color1;
+        else if (index % 2 === 0)
+          context.fillStyle = color3;
+        else 
+          context.fillStyle = color3;
+
+        context.fillRect(cell.x, cell.y, cell.height, cell.width);
+    
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
           // увеличиваем длину змейки
@@ -216,6 +336,33 @@ window.addEventListener('resize',BodyResized,false);
           }
         }
       });
+      // если уровень сложности 2 - рисуем стены с окнами
+      if (difficultyLevel === 2) {
+        context.fillStyle = wallColor;
+        context.fillRect(windowWall.part1.x, windowWall.part1.y, windowWall.part1.width, windowWall.part1.height);
+        context.fillRect(windowWall.part2.x, windowWall.part2.y, windowWall.part2.width, windowWall.part2.height);
+        context.fillRect(windowWall.part3.x, windowWall.part3.y, windowWall.part3.width, windowWall.part3.height);
+        context.fillRect(windowWall.part4.x, windowWall.part4.y, windowWall.part4.width, windowWall.part4.height);
+        context.fillRect(windowWall.part5.x, windowWall.part5.y, windowWall.part5.width, windowWall.part5.height);
+        context.fillRect(windowWall.part6.x, windowWall.part6.y, windowWall.part6.width, windowWall.part6.height);
+        context.fillRect(windowWall.part7.x, windowWall.part7.y, windowWall.part7.width, windowWall.part7.height);
+        context.fillRect(windowWall.part8.x, windowWall.part8.y, windowWall.part8.width, windowWall.part8.height);
+        // есди змейка столкнулась с какой-либо частью стены - игра окончена
+        if (collides(snake,windowWall.part1) || collides(snake,windowWall.part2) || collides(snake,windowWall.part3) || collides(snake,windowWall.part4)|| collides(snake,windowWall.part5)|| collides(snake,windowWall.part6) || collides(snake,windowWall.part7) || collides(snake,windowWall.part8)) {
+          gameOver();
+        }
+      }
+       // если уровень сложности 3 - рисуем стены без окон
+       if (difficultyLevel === 3) {
+        context.fillStyle = wallColor;
+        context.fillRect(wall.part1.x, wall.part1.y, wall.part1.width, wall.part1.height);
+        context.fillRect(wall.part2.x, wall.part2.y, wall.part2.width, wall.part2.height);
+        context.fillRect(wall.part3.x, wall.part3.y, wall.part3.width, wall.part3.height);
+        context.fillRect(wall.part4.x, wall.part4.y, wall.part4.width, wall.part4.height);
+        if (collides(snake,wall.part1) || collides(snake,wall.part2) || collides(snake,wall.part3) || collides(snake,wall.part4)) {
+          gameOver()
+        }
+      }
     }
     // Смотрим, какие нажимаются клавиши, и реагируем на них нужным образом
     document.addEventListener('keydown', direction);
