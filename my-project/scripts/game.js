@@ -41,7 +41,11 @@ window.addEventListener('resize',BodyResized,false);
   var setLevel2 = setLevelFunc(2);
   var setLevel3 = setLevelFunc(3);
 
+  var gameStat = 1; // 1 - игра идет, 2 - пауза, 3 - игра окончена
+
   function startGame() {
+    gameStat = 1;
+    closeModal();
     const preloadedImagesH={}; // ключ - имя предзагруженного изображения
     function preloadImage(fn) {
         // если такое изображение уже предзагружалось - ничего не делаем
@@ -54,15 +58,13 @@ window.addEventListener('resize',BodyResized,false);
         preloadedImagesH[fn]=true;
     }
     preloadImage('images/apple.png');
-    preloadImage('images/snake1.png');
     // задаем переменные 
-    var score = 0;
+    var currentScore = 0;
     var canvas = document.getElementById('game');
     var context = canvas.getContext('2d');
     var width = canvas.width;
     var height = canvas.height;
     var food;
-    var gameStat = 1; // 1 - игра идет, 2 - пауза
     // Размер одной клеточки на поле — 1/25 часть поля
     var grid = width/25;
     // Служебная переменная, которая отвечает за скорость змейки
@@ -275,15 +277,18 @@ window.addEventListener('resize',BodyResized,false);
       }
       // Обнуляем переменную скорости
       count = 0;
-      // описываем функцию gameOver
       function gameOver() {
         cancelAnimationFrame(gameLoop);
-        localStorage.setItem('bestScore',score);
+        localStorage.setItem('bestScore',currentScore);
+        gameStat = 3;
+        openModal();
+        console.log('GAME OVER');
+        console.log(currentScore);
       }
       // Обновляем счетчики на экране
       var bestScore = localStorage.getItem('bestScore'); 
-      document.getElementById('current-score').innerHTML = score;
-      document.getElementById('best-score').innerHTML = bestScore?bestScore:score;
+      document.getElementById('current-score').innerHTML = currentScore;
+      document.getElementById('best-score').innerHTML = bestScore?bestScore:currentScore;
       // Очищаем игровое поле
       context.clearRect(0, 0, canvas.width, canvas.height);
       if (gameStat === 1) 
@@ -321,7 +326,7 @@ window.addEventListener('resize',BodyResized,false);
         if (cell.x === apple.x && cell.y === apple.y) {
           // увеличиваем длину змейки
           snake.maxCells++;
-          score++;
+          currentScore++;
           apple.update();
           }
           // Проверяем, не столкнулась ли змея сама с собой
@@ -331,6 +336,7 @@ window.addEventListener('resize',BodyResized,false);
           if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
             // Задаём стартовые параметры основным переменным
             gameOver();
+            console.log('snake ate itself');
             snake.restart();
             apple.update();
           }
@@ -350,6 +356,8 @@ window.addEventListener('resize',BodyResized,false);
         // есди змейка столкнулась с какой-либо частью стены - игра окончена
         if (collides(snake,windowWall.part1) || collides(snake,windowWall.part2) || collides(snake,windowWall.part3) || collides(snake,windowWall.part4)|| collides(snake,windowWall.part5)|| collides(snake,windowWall.part6) || collides(snake,windowWall.part7) || collides(snake,windowWall.part8)) {
           gameOver();
+          console.log('wall collision');
+          console.log(snake.cells[0].x, snake.cells[0].y );
         }
       }
        // если уровень сложности 3 - рисуем стены без окон
@@ -359,8 +367,10 @@ window.addEventListener('resize',BodyResized,false);
         context.fillRect(wall.part2.x, wall.part2.y, wall.part2.width, wall.part2.height);
         context.fillRect(wall.part3.x, wall.part3.y, wall.part3.width, wall.part3.height);
         context.fillRect(wall.part4.x, wall.part4.y, wall.part4.width, wall.part4.height);
-        if (collides(snake,wall.part1) || collides(snake,wall.part2) || collides(snake,wall.part3) || collides(snake,wall.part4)) {
-          gameOver()
+        if (collides(snake.cells[0],wall.part1) || collides(snake.cells[0],wall.part2) || collides(snake.cells[0],wall.part3) || collides(snake.cells[0],wall.part4)) {
+          gameOver();
+          console.log('wall collision');
+          console.log(snake.cells[0].x, snake.cells[0].y );
         }
       }
     }

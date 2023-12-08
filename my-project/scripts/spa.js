@@ -1,10 +1,10 @@
 "use strict"
 
  // в закладке УРЛа будем хранить разделённые подчёркиваниями слова
-  // #Game - страница с игрой
-  // #Rules - правила игры
+  // #game - страница с игрой
+  // #rules - правила игры
   // #levels - выбор уровня сложности
-  // #Records - таблица рекордов
+  // #records - таблица рекордов
 
   // отслеживаем изменение закладки в УРЛе
   // оно происходит при любом виде навигации
@@ -42,7 +42,7 @@
     var pageHTML = "";
     switch ( SPAState.pagename ) {
       case 'menu':
-        pageHTML+="<div class='menu-wrapper'><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='records'>Таблица рекордов</a></li></ul></div>";
+        pageHTML+="<div class='menu-wrapper'><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='#rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='#records'>Таблица рекордов</a></li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         var levelSpan = document.getElementById('level-point');
         if (difficultyLevel === 1) 
@@ -60,14 +60,25 @@
         document.getElementById('level-3').addEventListener('click',setLevel3);
         break;
       case 'game':
+        // сама игра
         pageHTML+="<div class='game-wrapper'><div class='score'><span>Счет : <span id='current-score'></span></span><span>Лучший счет : <span id='best-score'></span></span></div><canvas id='game' width='100' height='100'></canvas></div>";
+        // модальное окно, открывается в случае проигрыша
+        pageHTML+="<div class='modal-glass'><div class='modal-menu'><h3>Игра окончена!</h3><input type='text' placeholder='Введите ваше имя' id='user-name'>";
+        pageHTML+="<div id='add-me'>Запомнить меня</div><a id='new-game'href='#game'>Новая игра</a><a href='#records'>Таблица рекордов</a></div></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
+        document.getElementById('add-me').addEventListener('click', storeInfo, false);
+        document.getElementById('new-game').addEventListener('click', startGame, false);
         ResizeCanvas();
         startGame();
+        if (gameStat != 3)
+          closeModal();
         break;
       case 'records':
-        pageHTML+="<div class='records-wrapper'><h3>Лучшие результаты</h3></div>";
+        pageHTML+="<div class='records-wrapper'><h3>Лучшие результаты</h3>";
+        pageHTML+="<ul><li class='records-item'></li><li class='records-item'></li><li class='records-item'></li>";
+        pageHTML+="<li class='records-item'></li><li class='records-item'></li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
+        restoreInfo();
         break;
       case 'rules':
         pageHTML+="<div class='rules-wrapper'><h3>Правила игры</h3></div>";
@@ -109,3 +120,18 @@
   }
   // переключаемся в состояние, которое сейчас прописано в закладке УРЛ
   switchToStateFromURLHash();
+
+  function openModal() {
+    let modal = document.querySelector('.modal-menu');
+    document.querySelector('.modal-glass').style.visibility = 'visible';
+    modal.style.visibility = 'visible';
+    modal.style.width = 'auto';
+    console.log('modal opened');
+  }
+  function closeModal() {
+    let modal = document.querySelector('.modal-menu');
+    document.querySelector('.modal-glass').style.visibility = 'hidden';
+    modal.style.visibility = 'hidden';
+    modal.style.width = 0 + 'px';
+    console.log('modal closed');
+  }
