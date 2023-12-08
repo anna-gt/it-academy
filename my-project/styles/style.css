@@ -107,7 +107,7 @@ canvas {
   align-items: center;
   padding: 20px;
   border: 1px solid white;
-  bordex-radius: 10px;
+  border-radius: 10px;
 }
 #record-number {
   font-weight: bold;

@@ -9,7 +9,7 @@
   // отслеживаем изменение закладки в УРЛе
   // оно происходит при любом виде навигации
   // в т.ч. при нажатии кнопок браузера ВПЕРЁД/НАЗАД
-  window.onhashchange=switchToStateFromURLHash;
+  window.onhashchange = switchToStateFromURLHash;
   // текущее состояние приложения
   // это Model из MVC
   var SPAState = {};
@@ -22,6 +22,10 @@
   // частей кода в зависимости от формы URLа
   // "роутинг" и есть "контроллер" из MVC - управление приложением через URL
   function switchToStateFromURLHash() {
+    if ((gameStat === 1 || gameStat === 2) && currentScore > 0) {
+      gameStat = 3;
+      alert('Прогресс будет утерян');
+    };
     var URLHash = window.location.hash;
 
     // убираем из закладки УРЛа решётку
@@ -135,3 +139,13 @@
     modal.style.width = 0 + 'px';
     console.log('modal closed');
   }
+
+  window.onbeforeunload = befUnload;
+
+  function befUnload(EO) {
+    EO=EO||window.event;
+    // если текст изменён, попросим браузер задать вопрос пользователю
+    if ( (gameStat === 1 || gameStat === 2) && currentScore > 0 )
+      console.log('we have progress')
+      EO.returnValue='Вы можете потерять свой прогресс';
+  };

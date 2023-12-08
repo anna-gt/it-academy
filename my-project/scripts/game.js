@@ -41,10 +41,12 @@ window.addEventListener('resize',BodyResized,false);
   var setLevel2 = setLevelFunc(2);
   var setLevel3 = setLevelFunc(3);
 
-  var gameStat = 1; // 1 - игра идет, 2 - пауза, 3 - игра окончена
+  var currentScore;
+  var gameStat; // 1 - игра идет, 2 - пауза, 3 - игра окончена
 
   function startGame() {
     gameStat = 1;
+    currentScore = 0;
     closeModal();
     const preloadedImagesH={}; // ключ - имя предзагруженного изображения
     function preloadImage(fn) {
@@ -59,7 +61,6 @@ window.addEventListener('resize',BodyResized,false);
     }
     preloadImage('images/apple.png');
     // задаем переменные 
-    var currentScore = 0;
     var canvas = document.getElementById('game');
     var context = canvas.getContext('2d');
     var width = canvas.width;
@@ -269,21 +270,25 @@ window.addEventListener('resize',BodyResized,false);
       // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. 
       // Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. 
       // Было 60 кадров в секунду, станет 15.
-      var gameLoop = requestAnimationFrame(loop);
+      //var gameLoop = requestAnimationFrame(loop);
       // Игровой код выполнится только один раз из восьми, в этом и суть замедления кадров, 
       // а пока переменная count меньше восьми, код выполняться не будет.
-      if (++count < 8) {
-        return;
-      }
+      //if (++count < 8) {
+       // return;
+      //}
       // Обнуляем переменную скорости
       count = 0;
       function gameOver() {
-        cancelAnimationFrame(gameLoop);
-        localStorage.setItem('bestScore',currentScore);
         gameStat = 3;
+        clearInterval(gameInterval);
+        //cancelAnimationFrame(gameLoop);
+        localStorage.setItem('bestScore',currentScore);
         openModal();
         console.log('GAME OVER');
         console.log(currentScore);
+      }
+      if (gameStat === 3) {
+        clearInterval(gameInterval);
       }
       // Обновляем счетчики на экране
       var bestScore = localStorage.getItem('bestScore'); 
@@ -405,5 +410,6 @@ window.addEventListener('resize',BodyResized,false);
           }
     };
 
-    requestAnimationFrame(loop);
+    const gameInterval = setInterval(loop, 100);
+    //requestAnimationFrame(loop);
   }
