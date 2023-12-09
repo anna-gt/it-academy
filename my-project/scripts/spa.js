@@ -46,7 +46,7 @@
     var pageHTML = "";
     switch ( SPAState.pagename ) {
       case 'menu':
-        pageHTML+="<div class='menu-wrapper'><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='#rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='#records'>Таблица рекордов</a></li></ul></div>";
+        pageHTML+="<div class='menu-wrapper'><h3 class='snake-word'><span id='one'>З</span><span id='two'>М</span><span id='three'>Е</span><span id='four'>Й</span><span id='five'>К</span><span id='six'>А</span></h3><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='#rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='#records'>Таблица рекордов</a></li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         var levelSpan = document.getElementById('level-point');
         if (difficultyLevel === 1) 
@@ -57,7 +57,7 @@
           levelSpan.innerHTML = 'высокий';
         break;
       case 'levels':
-        pageHTML+="<div class='levels-wrapper'><div id='arrow-back'><a href='#menu'>&LT назад</a></div><ul><li class='menu-item'><a href='#menu' id='level-1'>Низкий</a></li><li class='menu-item' id='level-2'><a href='#menu'>Средний</a></li><li class='menu-item' ><a href='#menu' id='level-3'>Высокий</a></li></ul></div>";
+        pageHTML+="<div class='levels-wrapper'><div id='arrow-back'><a href='#menu'>&LT; назад</a></div><ul><li class='menu-item'><a href='#menu' id='level-1'>Низкий</a></li><li class='menu-item' id='level-2'><a href='#menu'>Средний</a></li><li class='menu-item' ><a href='#menu' id='level-3'>Высокий</a></li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         document.getElementById('level-1').addEventListener('click',setLevel1);
         document.getElementById('level-2').addEventListener('click',setLevel2);
@@ -65,7 +65,8 @@
         break;
       case 'game':
         // сама игра
-        pageHTML+="<div class='game-wrapper'><div class='score'><span>Счет : <span id='current-score'></span></span><span>Лучший счет : <span id='best-score'></span></span></div><canvas id='game' width='100' height='100'></canvas></div>";
+        pageHTML+="<div class='score'><span>Счет : <span id='current-score'></span></span><span>Лучший счет : <span id='best-score'></span></span></div><div class='game-wrapper'><canvas id='game' width='100' height='100'></canvas></div>";
+        pageHTML+="<div class='buttons'><button id='left-b'>&larr;</button><button id='right-b'>&rarr;</button><button id='up-b'>&uarr;</button><button id='down-b'>&darr;</button></div>";
         // модальное окно, открывается в случае проигрыша
         pageHTML+="<div class='modal-glass'><div class='modal-menu'><h3>Игра окончена!</h3><input type='text' placeholder='Введите ваше имя' id='user-name'>";
         pageHTML+="<div id='add-me'>Запомнить меня</div><a id='new-game'href='#game'>Новая игра</a><a href='#records'>Таблица рекордов</a></div></div>";
@@ -85,7 +86,7 @@
         restoreInfo();
         break;
       case 'rules':
-        pageHTML+="<div class='rules-wrapper'><h3>Правила игры</h3></div>";
+        pageHTML+="<div class='rules-wrapper'><h3>Правила игры</h3><ul class='rules'><li class='rules-item'>есть поле из клеточек, где случайным образом появляется еда;</li><li class='rules-item'>есть змейка, которая всё время двигается и которой мы можем управлять с помощью стрелок на клавиатуре, кнопок на экране или свайпом вверх-вниз-влево-вправо;</li><li class='rules-item'>если змейка на своём пути встречает еду — еда исчезает, появляется в новом месте, а сама змейка удлиняется на одну клеточку;</li><li class='rules-item'>если змейка врежется в стену, кирпич или в саму себя, игра заканчивается.</li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         break;
     }
@@ -140,7 +141,7 @@
     console.log('modal closed');
   }
 
-  window.onbeforeunload = befUnload;
+  //window.onbeforeunload = befUnload;
 
   function befUnload(EO) {
     EO=EO||window.event;

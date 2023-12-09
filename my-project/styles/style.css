@@ -16,15 +16,16 @@ body ul {
 .wrapper {
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #1b2b4c;
   overflow: hidden;
 }
 .menu-wrapper {
-  height: 100vh;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 .menu-wrapper ul {
@@ -90,13 +91,18 @@ body ul {
   min-width: 100px !important;
   min-height: 100px !important;
   }
+  .score {
+    min-width: 100px;
+  }
 }
 canvas {
-  border: 1px solid white;
+  border: 1px solid #4cc9f0;
+  box-shadow: 10px 10px 100px 6px #4cc9f0;
 }
 .score {
   display: flex;
   justify-content: space-between;
+  min-width: 400px;
   color: white;
   margin-bottom: 5px;
 }
@@ -106,9 +112,37 @@ canvas {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  border: 1px solid white;
-  border-radius: 10px;
+  color: #fff;
+  border: 1px solid #f038ff;
+  box-shadow: 10px 10px 100px 6px #f038ff;
 }
+.rules-wrapper {
+  max-width: 400px;
+  border: 1px solid #FFE62D;
+  box-shadow: 10px 10px 100px 6px #FFE62D;
+}
+.rules-wrapper .rules-item {
+  padding: 10px;
+}
+.records-wrapper h3, .rules-wrapper h3 {
+  text-align: center;
+  animation: 2s neon alternate-reverse infinite;
+}
+@keyframes neon {
+  from {
+      text-shadow: 0 0 5px #FFF,
+      0 0 10px #FFF,
+      0 0 15px #FFF,
+      0 0 20px #BFE2FF;
+  }
+  to {
+      text-shadow: 0 0 20px #BFE2FF,
+      0 0 35px #BFE2FF,
+      0 0 40px #BFE2FF,
+      0 0 50px #BFE2FF,
+      0 0 800px #BFE2FF;
+  }
+}    
 #record-number {
   font-weight: bold;
 }
@@ -156,3 +190,140 @@ canvas {
   color: #FFE62D;
   cursor: pointer;
 }
+.buttons button {
+  cursor: pointer;
+  color: #1b2b4c;
+  border: 1px solid;
+  background-color: transparent;
+  text-transform: uppercase;
+  font-size: 16px;
+  padding: 15px 30px;
+  transition: 0.2s;
+}
+.buttons button:hover {
+  background-color: #f038ff;
+  color: #fff;
+  border: 1px solid #f038ff;
+  box-shadow: 10px 10px 100px 6px #f038ff;
+}
+.snake-word {
+  font-size: 80px;
+  font-weight: bold;
+  color: #FFF;
+  text-transform: uppercase;
+  margin: 10px !important;
+}
+.snake-word #one {
+  color: #12B8FF;
+  animation: 2s neon-1 alternate-reverse infinite;
+}
+.snake-word #two {
+  color: #01DC03;
+  animation: 2s neon-2 alternate-reverse infinite;
+}
+.snake-word #three {
+  color: #DF19FB;
+  animation: 2s neon-3 alternate-reverse infinite;
+}
+.snake-word #four {
+  color: #2F46FA;
+  animation: 2s neon-4 alternate-reverse infinite;
+}
+.snake-word #five {
+  color: #FD4499;
+  animation: 2s neon-5 alternate-reverse infinite;
+}
+.snake-word #six {
+  color: #FFE62D;
+  animation: 2s neon-6 alternate-reverse infinite;
+}
+@keyframes neon-1 {
+  from {
+      text-shadow: 0 0 5px #12B8FF,
+      0 0 10px #12B8FF,
+      0 0 15px #12B8FF,
+      0 0 20px #42bff5;
+  }
+  to {
+      text-shadow: 0 0 20px #42bff5,
+      0 0 35px #42bff5,
+      0 0 40px #42bff5,
+      0 0 50px #42bff5,
+      0 0 800px #42bff5;
+  }
+}  
+@keyframes neon-2 {
+  from {
+      text-shadow: 0 0 5px #01DC03,
+      0 0 10px #01DC03,
+      0 0 15px #01DC03,
+      0 0 20px #7ce27e;
+  }
+  to {
+      text-shadow: 0 0 20px #7ce27e,
+      0 0 35px #7ce27e,
+      0 0 40px #7ce27e,
+      0 0 50px #7ce27e,
+      0 0 800px #7ce27e;
+  }
+}  
+@keyframes neon-3 {
+  from {
+      text-shadow: 0 0 5px #DF19FB,
+      0 0 10px #DF19FB,
+      0 0 15px #DF19FB,
+      0 0 20px #df99e8;
+  }
+  to {
+      text-shadow: 0 0 20px #df99e8,
+      0 0 35px #df99e8,
+      0 0 40px #df99e8,
+      0 0 50px #df99e8,
+      0 0 800px #df99e8;
+  }
+}  
+@keyframes neon-4 {
+  from {
+      text-shadow: 0 0 5px #2F46FA,
+      0 0 10px #2F46FA,
+      0 0 15px #2F46FA,
+      0 0 20px #7a87e9;
+  }
+  to {
+      text-shadow: 0 0 20px #7a87e9,
+      0 0 35px #7a87e9,
+      0 0 40px #7a87e9,
+      0 0 50px #7a87e9,
+      0 0 800px #7a87e9;
+  }
+}  
+@keyframes neon-5 {
+  from {
+      text-shadow: 0 0 5px #FD4499,
+      0 0 10px #FD4499,
+      0 0 15px #FD4499,
+      0 0 20px #ea8fb9;
+  }
+  to {
+      text-shadow: 0 0 20px #ea8fb9,
+      0 0 35px #ea8fb9,
+      0 0 40px #ea8fb9,
+      0 0 50px #ea8fb9,
+      0 0 800px #ea8fb9;
+  }
+}  
+@keyframes neon-6 {
+  from {
+      text-shadow: 0 0 5px #FFE62D,
+      0 0 10px #FFE62D,
+      0 0 15px #FFE62D,
+      0 0 20px #f7ec95;
+  }
+  to {
+      text-shadow: 0 0 20px #f7ec95,
+      0 0 35px #f7ec95,
+      0 0 40px #f7ec95,
+      0 0 50px #f7ec95,
+      0 0 800px #f7ec95;
+  }
+}  

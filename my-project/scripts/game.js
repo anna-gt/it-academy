@@ -5,11 +5,10 @@ window.addEventListener('resize',BodyResized,false);
   function BodyResized() { ResizeCanvas();}
   function ResizeCanvas() {
     var wrapper = document.querySelector('.game-wrapper');
-    console.log('Ширина контейнера: '+wrapper.offsetWidth);
-
+    //console.log('Ширина контейнера: '+wrapper.offsetWidth);
     var NewCanvasWidth = wrapper.offsetWidth;
     var NewCanvasHeight = wrapper.offsetWidth;
-    console.log('Размер Canvas: '+NewCanvasWidth+'x'+NewCanvasHeight);
+    //console.log('Размер Canvas: '+NewCanvasWidth+'x'+NewCanvasHeight);
 
     var canvas = document.getElementById('game');
     canvas.width = NewCanvasWidth;
@@ -42,7 +41,7 @@ window.addEventListener('resize',BodyResized,false);
   var setLevel3 = setLevelFunc(3);
 
   var currentScore;
-  var gameStat; // 1 - игра идет, 2 - пауза, 3 - игра окончена
+  var gameStat = 0; // 1 - игра идет, 2 - пауза, 3 - игра окончена
 
   function startGame() {
     gameStat = 1;
@@ -59,7 +58,7 @@ window.addEventListener('resize',BodyResized,false);
         // запоминаем, что изображение уже предзагружалось
         preloadedImagesH[fn]=true;
     }
-    preloadImage('images/apple.png');
+    preloadImage('images/candy.svg');
     // задаем переменные 
     var canvas = document.getElementById('game');
     var context = canvas.getContext('2d');
@@ -69,7 +68,7 @@ window.addEventListener('resize',BodyResized,false);
     // Размер одной клеточки на поле — 1/25 часть поля
     var grid = width/25;
     // Служебная переменная, которая отвечает за скорость змейки
-    var count = 0;
+    // var count = 0;
     var color1 = '#12B8FF'; // Deep sky blue
     var color2 = '#01DC03'; // Vibrant green
     var color3 = '#FFE62D'; // Canary
@@ -112,26 +111,23 @@ window.addEventListener('resize',BodyResized,false);
       };
       // Стартовая длина змейки — 4 клеточки
       self.maxCells = 4;
-      self.stop = function() {
-        self.dx = 0;
-        self.dy = 0;
-      }
+    
       self.update = function() {
         // Двигаем змейку с нужной скоростью
         self.x += self.dx;
         self.y += self.dy;
         // Если змейка достигла края поля по горизонтали — продолжаем её движение с противоположной стороны
         if (self.x < 0) {
-          self.x = canvas.width - grid;
+          self.x = width - grid;
         }
-        else if (self.x >= canvas.width) {
+        else if (self.x >= width) {
           self.x = 0;
         }
       // Делаем то же самое для движения по вертикали
         if (self.y < 0) {
-          self.y = canvas.height - grid;
+          self.y = height - grid;
         }
-        else if (self.y >= canvas.height) {
+        else if (self.y >= height) {
           self.y = 0;
         }
         // Продолжаем двигаться в выбранном направлении. Голова всегда впереди, 
@@ -143,8 +139,31 @@ window.addEventListener('resize',BodyResized,false);
           self.cells.pop();
         }
       }
-      self.crop = function() {
-        self.cells.shift();
+      self.setDirection = function(newDirection) {
+        if (newDirection === 'right') {
+          if (snake.dx === 0) {
+            self.dx = snake.speed;
+            self.dy = 0;
+          }
+        };
+        if (newDirection === 'left') {
+          if (snake.dx === 0) {
+            self.dx = -snake.speed;
+            self.dy = 0;
+          }
+        };
+        if (newDirection === 'top') {
+          if (snake.dy === 0) {
+            self.dy = -snake.speed;
+            self.dx = 0;
+          }
+        };
+        if (newDirection === 'bottom') {
+          if (snake.dy === 0) {
+            self.dy = snake.speed;
+            self.dx = 0;
+          }
+        };
       }
       self.restart = function() {
         self.x = grid * 10;
@@ -168,10 +187,23 @@ window.addEventListener('resize',BodyResized,false);
       // Рисуем новое яблочко
       // Помним, что холст разбит на ячейки — 25 в каждую сторону
        // Ставим яблочко в случайное место
-       self.update = function() {
-        self.x = randomDiap(1, 25) * grid;
-        self.y = randomDiap(1, 25) * grid;
-       } 
+       // Не ставим по краям - там могут быть стены
+      self.getRandomPoint = function() {
+        self.x = randomDiap(3, 23) * grid;
+        self.y = randomDiap(2, 23) * grid;
+       };
+      self.check = function(arr) {
+        for (let i = 0; i < arr1.length; i++) {
+          if (arr[i].x == self.x) 
+            return false;
+          return true;
+        }
+      };
+      self.update = function(arr1, arr2) {
+        self.getRandomPoint();
+        if (!self.check(arr1) || !self.check(arr2)) 
+          self.update(arr1, arr2);
+        };
     };
 
     // конструктор класса стен с окнами
@@ -256,11 +288,39 @@ window.addEventListener('resize',BodyResized,false);
       };
     }
 
-    // создаем яблоко, змейку, стены
+    // конструктор класса кирпичей-препятствий
+    function BrickType() {
+      const self = this;
+      self.parts = [];
+      self.clear = function() {
+        // набор кирпичей - массив
+        self.parts = [];
+      };
+      // создать 2 кирпича в верхнем левом и нижнем правом участке поля
+      self.create13 = function() {
+        self.parts[0] = {x: randomDiap(2,12)*grid, y: randomDiap(2,12)*grid, width: grid, height: grid};
+        self.parts[1] = {x: randomDiap(13,24)*grid, y: randomDiap(13,24)*grid, width: grid, height: grid}
+      };
+      // создать 2 кирпича в верхнем правом и нижнем левом участке поля
+      self.create24 = function() {
+        self.parts[2] = {x: randomDiap(13,24)*grid, y: randomDiap(2,12)*grid, width: grid, height: grid};
+        self.parts[3] = {x: randomDiap(2,12)*grid, y: randomDiap(13,24)*grid, width: grid, height: grid}
+      }
+    }
+
+    // создаем яблоко, змейку, стены и кирпичи
     var snake = new SnakeType;
     var apple = new AppleType;
     var windowWall = new WallWithWindows;
     var wall = new WallType;
+    var bricks = new BrickType;
+    if (difficultyLevel === 2) 
+      bricks.create13();
+    if (difficultyLevel === 3) {
+      bricks.create13();
+      //bricks.create24();
+    }
+    
     // если уровень сложности не 1 - убираем границу поля, вместо этого будут стены
     if (difficultyLevel != 1) 
       document.querySelector('canvas').style.border = 'none';
@@ -277,7 +337,7 @@ window.addEventListener('resize',BodyResized,false);
        // return;
       //}
       // Обнуляем переменную скорости
-      count = 0;
+      // count = 0;
       function gameOver() {
         gameStat = 3;
         clearInterval(gameInterval);
@@ -300,7 +360,7 @@ window.addEventListener('resize',BodyResized,false);
         snake.update();
       // Рисуем еду — красное яблоко
       food = new Image();
-      food.src = "images/apple.png";
+      food.src = "images/candy.svg";
       context.shadowBlur = 0;
       context.drawImage(food, apple.x, apple.y, apple.width, apple.height);
       //context.fillStyle = 'red';
@@ -332,7 +392,7 @@ window.addEventListener('resize',BodyResized,false);
           // увеличиваем длину змейки
           snake.maxCells++;
           currentScore++;
-          apple.update();
+          apple.getRandomPoint();
           }
           // Проверяем, не столкнулась ли змея сама с собой
           // Для этого перебираем весь массив и смотрим, есть ли у нас в массиве змейки две клетки с одинаковыми координатами 
@@ -343,10 +403,20 @@ window.addEventListener('resize',BodyResized,false);
             gameOver();
             console.log('snake ate itself');
             snake.restart();
-            apple.update();
+            apple.getRandomPoint();
           }
         }
       });
+      if (difficultyLevel != 1) {
+        for (let i = 0; i < bricks.parts.length; i++) {
+          const brick = bricks.parts[i];
+          context.fillStyle = wallColor;
+          context.fillRect(brick.x, brick.y, brick.width, brick.height)
+          if (collides(snake.cells[0],brick)) {
+            gameOver();
+          }
+        };
+      }
       // если уровень сложности 2 - рисуем стены с окнами
       if (difficultyLevel === 2) {
         context.fillStyle = wallColor;
@@ -382,34 +452,47 @@ window.addEventListener('resize',BodyResized,false);
     // Смотрим, какие нажимаются клавиши, и реагируем на них нужным образом
     document.addEventListener('keydown', direction);
     function direction(eo) {
+      eo = eo || window.event;
       // Дополнительно проверяем такой момент: если змейка движется, например, влево, 
       // то ещё одно нажатие влево или вправо ничего не поменяет — змейка продолжит двигаться в ту же сторону, что и раньше. 
       // Это сделано для того, чтобы не разворачивать весь массив со змейкой на лету и не усложнять код игры.
       // Стрелка влево
       // Если нажата стрелка влево, и при этом змейка никуда не движется по горизонтали…
-      if (eo.which === 37 && snake.dx === 0) {
+      if (eo.which === 37) {
         // то даём ей движение по горизонтали, влево, а вертикальное — останавливаем
         // Та же самая логика будет и в остальных кнопках
-        snake.dx = -snake.speed;
-        snake.dy = 0;
+        snake.setDirection('left');
       }
       // Стрелка вверх
-      else if (eo.which === 38 && snake.dy === 0) {
-      snake.dy = -snake.speed;
-      snake.dx = 0;
+      else if (eo.which === 38) {
+        snake.setDirection('top');
       }
       // Стрелка вправо
-      else if (eo.which === 39 && snake.dx === 0) {
-        snake.dx = snake.speed;
-        snake.dy = 0;
+      else if (eo.which === 39) {
+        snake.setDirection('right');
       }
       // Стрелка вниз
-      else if (eo.which === 40 && snake.dy === 0) {
-        snake.dy = snake.speed;
-        snake.dx = 0;
-          }
+      else if (eo.which === 40) {
+        snake.setDirection('bottom');
+      }
+    };
+    document.getElementById('left-b').addEventListener('click',setLeftDirection);
+    function setLeftDirection(eo) {
+      snake.setDirection('left');
+    };
+    document.getElementById('right-b').addEventListener('click',setRightDirection);
+    function setRightDirection(eo) {
+      snake.setDirection('right');
+    };
+    document.getElementById('up-b').addEventListener('click',setUpDirection);
+    function setUpDirection(eo) {
+      snake.setDirection('top');
+    };
+    document.getElementById('down-b').addEventListener('click',setDownDirection);
+    function setDownDirection(eo) {
+      snake.setDirection('bottom');
     };
 
-    const gameInterval = setInterval(loop, 100);
+    const gameInterval = setInterval(loop, 150);
     //requestAnimationFrame(loop);
   }
