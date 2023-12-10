@@ -1,5 +1,4 @@
 "use strict"
-
 // задаем размеры canvas
 window.addEventListener('resize',BodyResized,false);
   function BodyResized() { ResizeCanvas();}
@@ -40,14 +39,17 @@ window.addEventListener('resize',BodyResized,false);
   var setLevel2 = setLevelFunc(2);
   var setLevel3 = setLevelFunc(3);
 
-  var currentScore;
-  var gameStat = 0; // 1 - игра идет, 2 - пауза, 3 - игра окончена
+  // цвета
+  var color1 = '#12B8FF'; // Deep sky blue
+  var color2 = '#01DC03'; // Vibrant green
+  var color3 = '#FFE62D'; // Canary
+  var color4 = '#FD4499'; // Rose bonbon
+  var color5 = '#DF19FB'; // Phlox
+  var color6 = '#2F46FA'; // Blue orchid
+  var wallColor = 'white';
 
-  function startGame() {
-    gameStat = 1;
-    currentScore = 0;
-    closeModal();
-    const preloadedImagesH={}; // ключ - имя предзагруженного изображения
+  // изображения
+  const preloadedImagesH={}; // ключ - имя предзагруженного изображения
     function preloadImage(fn) {
         // если такое изображение уже предзагружалось - ничего не делаем
         if ( fn in preloadedImagesH )
@@ -57,8 +59,46 @@ window.addEventListener('resize',BodyResized,false);
         img.src=fn; // загрузка начинается
         // запоминаем, что изображение уже предзагружалось
         preloadedImagesH[fn]=true;
-    }
-    preloadImage('images/candy.svg');
+    };
+  preloadImage('images/candy.svg');
+
+  var currentScore;
+  var gameStat = 0; // 1 - игра идет, 2 - пауза, 3 - игра окончена
+  console.log(gameStat);
+  // звук
+  const hitSound = new Audio;
+  const pickSound = new Audio;
+  if ( hitSound.canPlayType("audio/mpeg")=="probably" )
+    hitSound.src = "sounds/hit.mp3"
+  else
+    hitSound.src = "sounds/hit.ogg";
+  if ( pickSound.canPlayType("audio/mpeg")=="probably" )
+    pickSound.src = "sounds/pick.mp3"
+  else
+    pickSound.src = "sounds/pick.ogg";
+  function hitSoundInit() {
+    hitSound.play(); // запускаем звук
+    hitSound.pause(); // и сразу останавливаем
+  };
+  function hitSoundPlay() {
+    hitSound.currentTime=0; // в секундах
+    hitSound.play();
+  };
+  function pickSoundInit() {
+    pickSound.play(); // запускаем звук
+    pickSound.pause(); // и сразу останавливаем
+  };
+  function pickSoundPlay() {
+    pickSound.currentTime=0; // в секундах
+    pickSound.play();
+  };
+
+  function startGame() {
+    gameStat = 1;
+    currentScore = 0;
+    closeModal();
+    hitSoundInit();
+    pickSoundInit();
     // задаем переменные 
     var canvas = document.getElementById('game');
     var context = canvas.getContext('2d');
@@ -69,13 +109,6 @@ window.addEventListener('resize',BodyResized,false);
     var grid = width/25;
     // Служебная переменная, которая отвечает за скорость змейки
     // var count = 0;
-    var color1 = '#12B8FF'; // Deep sky blue
-    var color2 = '#01DC03'; // Vibrant green
-    var color3 = '#FFE62D'; // Canary
-    var color4 = '#FD4499'; // Rose bonbon
-    var color5 = '#DF19FB'; // Phlox
-    var color6 = '#2F46FA'; // Blue orchid
-    var wallColor = 'white';
 
     function drawCircle (x, y, radius, fillCircle) {
       context.beginPath();
@@ -299,12 +332,12 @@ window.addEventListener('resize',BodyResized,false);
       // создать 2 кирпича в верхнем левом и нижнем правом участке поля
       self.create13 = function() {
         self.parts[0] = {x: randomDiap(2,12)*grid, y: randomDiap(2,12)*grid, width: grid, height: grid};
-        self.parts[1] = {x: randomDiap(13,24)*grid, y: randomDiap(13,24)*grid, width: grid, height: grid}
+        self.parts[1] = {x: randomDiap(13,23)*grid, y: randomDiap(13,23)*grid, width: grid, height: grid}
       };
       // создать 2 кирпича в верхнем правом и нижнем левом участке поля
       self.create24 = function() {
-        self.parts[2] = {x: randomDiap(13,24)*grid, y: randomDiap(2,12)*grid, width: grid, height: grid};
-        self.parts[3] = {x: randomDiap(2,12)*grid, y: randomDiap(13,24)*grid, width: grid, height: grid}
+        self.parts[2] = {x: randomDiap(13,23)*grid, y: randomDiap(2,12)*grid, width: grid, height: grid};
+        self.parts[3] = {x: randomDiap(2,12)*grid, y: randomDiap(13,23)*grid, width: grid, height: grid}
       }
     }
 
@@ -344,8 +377,6 @@ window.addEventListener('resize',BodyResized,false);
         //cancelAnimationFrame(gameLoop);
         localStorage.setItem('bestScore',currentScore);
         openModal();
-        console.log('GAME OVER');
-        console.log(currentScore);
       }
       if (gameStat === 3) {
         clearInterval(gameInterval);
@@ -358,7 +389,7 @@ window.addEventListener('resize',BodyResized,false);
       context.clearRect(0, 0, canvas.width, canvas.height);
       if (gameStat === 1) 
         snake.update();
-      // Рисуем еду — красное яблоко
+      // Рисуем еду
       food = new Image();
       food.src = "images/candy.svg";
       context.shadowBlur = 0;
@@ -390,6 +421,7 @@ window.addEventListener('resize',BodyResized,false);
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
           // увеличиваем длину змейки
+          pickSoundPlay();
           snake.maxCells++;
           currentScore++;
           apple.getRandomPoint();
@@ -400,10 +432,8 @@ window.addEventListener('resize',BodyResized,false);
           // Если такие клетки есть — начинаем игру заново
           if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
             // Задаём стартовые параметры основным переменным
+            hitSoundPlay();
             gameOver();
-            console.log('snake ate itself');
-            snake.restart();
-            apple.getRandomPoint();
           }
         }
       });
@@ -413,6 +443,7 @@ window.addEventListener('resize',BodyResized,false);
           context.fillStyle = wallColor;
           context.fillRect(brick.x, brick.y, brick.width, brick.height)
           if (collides(snake.cells[0],brick)) {
+            hitSoundPlay();
             gameOver();
           }
         };
@@ -430,6 +461,7 @@ window.addEventListener('resize',BodyResized,false);
         context.fillRect(windowWall.part8.x, windowWall.part8.y, windowWall.part8.width, windowWall.part8.height);
         // есди змейка столкнулась с какой-либо частью стены - игра окончена
         if (collides(snake,windowWall.part1) || collides(snake,windowWall.part2) || collides(snake,windowWall.part3) || collides(snake,windowWall.part4)|| collides(snake,windowWall.part5)|| collides(snake,windowWall.part6) || collides(snake,windowWall.part7) || collides(snake,windowWall.part8)) {
+          hitSoundPlay();
           gameOver();
           console.log('wall collision');
           console.log(snake.cells[0].x, snake.cells[0].y );
@@ -443,6 +475,7 @@ window.addEventListener('resize',BodyResized,false);
         context.fillRect(wall.part3.x, wall.part3.y, wall.part3.width, wall.part3.height);
         context.fillRect(wall.part4.x, wall.part4.y, wall.part4.width, wall.part4.height);
         if (collides(snake.cells[0],wall.part1) || collides(snake.cells[0],wall.part2) || collides(snake.cells[0],wall.part3) || collides(snake.cells[0],wall.part4)) {
+          hitSoundPlay();
           gameOver();
           console.log('wall collision');
           console.log(snake.cells[0].x, snake.cells[0].y );
