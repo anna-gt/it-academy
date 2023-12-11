@@ -24,7 +24,10 @@
     if ((gameStat === 1 || gameStat === 2) && currentScore > 0) {
       gameStat = 3;
       alert('Прогресс будет утерян');
-    };
+    }
+    else if (gameStat === 1 || gameStat === 2) {
+      gameStat = 3;
+    }
     var URLHash = window.location.hash;
 
     // убираем из закладки УРЛа решётку
@@ -64,14 +67,86 @@
         break;
       case 'game':
         // сама игра
-        pageHTML+="<div class='score'><span>Счет : <span id='current-score'></span></span><span>Лучший счет : <span id='best-score'></span></span></div><div class='game-wrapper'><canvas id='game' width='100' height='100'></canvas></div>";
+        pageHTML+="<div class='top-menu'><img id='vibro'><img id='mute'><img id='pause'></div><div class='score'><span>Счет : <span id='current-score'></span></span><span>Лучший счет : <span id='best-score'></span></span></div><div class='game-wrapper'><canvas id='game' width='100' height='100'>Вы видите это сообщение, потому что Ваш браузер не поддерживает canvas. Обновите браузер</canvas></div>";
         pageHTML+="<div class='buttons'><button id='left-b'>&larr;</button><button id='right-b'>&rarr;</button><button id='up-b'>&uarr;</button><button id='down-b'>&darr;</button></div>";
         // модальное окно, открывается в случае проигрыша
         pageHTML+="<div class='modal-glass'><div class='modal-menu'><h3>Игра окончена!</h3><input type='text' placeholder='Введите ваше имя' id='user-name'>";
-        pageHTML+="<div id='add-me'>Запомнить меня</div><a id='new-game'href='#game'>Новая игра</a><a href='#records'>Таблица рекордов</a></div></div>";
+        pageHTML+="<div id='add-me'>Запомнить меня</div><a id='new-game'href='#game'>Новая игра</a><a href='#records'>Таблица рекордов</a><a href='#menu'>Главное меню</a></div></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         document.getElementById('add-me').addEventListener('click', storeInfo, false);
         document.getElementById('new-game').addEventListener('click', startGame, false);
+        
+        var vibroBttn = document.getElementById('vibro');
+        var muteBttn = document.getElementById('mute');
+        var pauseBttn = document.getElementById('pause');
+        vibroBttn.addEventListener('click', vibroOnOff);
+        muteBttn.addEventListener('click', soundOnOff);
+        pauseBttn.addEventListener('click', pauseOnOff);
+        if (vibration) {
+          vibroBttn.src = 'images/vibro-on.svg';
+          vibroBttn.title = 'Выключить вибрацию';
+        }
+        else {
+          vibroBttn.src = 'images/vibro-off.svg';
+          vibroBttn.title = 'Включить вибрацию';
+        };
+        if (!mute) {
+          muteBttn.src = 'images/unmute.svg';
+          muteBttn.title = 'Выключить звук';
+        }
+        else {
+          muteBttn.src = 'images/mute.svg';
+          muteBttn.title = 'Включить звук';
+        };
+        if (gameStat != 2) {
+          pauseBttn.src = 'images/play.svg';
+          pauseBttn.title = 'Пауза';
+        }
+        else if (gameStat === 2) {
+          pauseBttn.src = 'images/pause.svg';
+          pauseBttn.title = 'Продолжить игру';
+        };
+
+        function vibroOnOff(eo) {
+          eo = eo || window.event;
+          if (vibration) {
+            vibration = false;
+            vibroBttn.src = 'images/vibro-off.svg';
+            vibroBttn.title = 'Включить вибрацию';
+          }
+          else {
+            vibration = true;
+            vibroBttn.src = 'images/vibro-on.svg';
+            vibroBttn.title = 'Выключить вибрацию';
+          }
+        };
+        function soundOnOff(eo) {
+          eo = eo || window.event;
+          if (!mute) {
+            mute = true;
+            muteBttn.src = 'images/mute.svg';
+            muteBttn.title = 'Включить звук';
+          }
+          else {
+            mute = false;
+            muteBttn.src = 'images/unmute.svg';
+            muteBttn.title = 'Выключить звук';
+          }
+        };
+        function pauseOnOff(eo) {
+          eo = eo || window.event;
+          if (gameStat === 1) {
+            gameStat = 2;
+            pauseBttn.src = 'images/pause.svg';
+            pauseBttn.title = 'Продолжить игру';
+          }
+          else if (gameStat === 2) {
+            gameStat = 1;
+            pauseBttn.src = 'images/play.svg';
+            pauseBttn.title = 'Пауза';
+          }
+        };
+
         ResizeCanvas();
         startGame();
         if (gameStat != 3)

@@ -61,11 +61,20 @@ window.addEventListener('resize',BodyResized,false);
         preloadedImagesH[fn]=true;
     };
   preloadImage('images/candy.svg');
+  preloadImage('images/mute.svg');
+  preloadImage('images/unmute.svg');
+  preloadImage('images/play.svg');
+  preloadImage('images/pause.svg');
+  preloadImage('images/vibro-off.svg');
+  preloadImage('images/vibro-on.svg');
 
   var currentScore;
   var gameStat = 0; // 1 - игра идет, 2 - пауза, 3 - игра окончена
   console.log(gameStat);
-  // звук
+  var mute = false;
+  var vibration = true;
+
+  // звук и вибрация
   const hitSound = new Audio;
   const pickSound = new Audio;
   if ( hitSound.canPlayType("audio/mpeg")=="probably" )
@@ -81,16 +90,27 @@ window.addEventListener('resize',BodyResized,false);
     hitSound.pause(); // и сразу останавливаем
   };
   function hitSoundPlay() {
-    hitSound.currentTime=0; // в секундах
-    hitSound.play();
+    if (!mute) {
+      hitSound.currentTime = 0; // в секундах
+      hitSound.play();
+    }
   };
   function pickSoundInit() {
     pickSound.play(); // запускаем звук
     pickSound.pause(); // и сразу останавливаем
   };
   function pickSoundPlay() {
-    pickSound.currentTime=0; // в секундах
-    pickSound.play();
+    if (!mute) {
+      pickSound.currentTime = 0; // в секундах
+      pickSound.play();
+    }
+  };
+  function vibro() {
+    if (vibration) {
+      if ( navigator.vibrate ) {
+        window.navigator.vibrate(100);
+      }
+    }
   };
 
   function startGame() {
@@ -380,7 +400,7 @@ window.addEventListener('resize',BodyResized,false);
       }
       if (gameStat === 3) {
         clearInterval(gameInterval);
-      }
+      };
       // Обновляем счетчики на экране
       var bestScore = localStorage.getItem('bestScore'); 
       document.getElementById('current-score').innerHTML = currentScore;
@@ -443,6 +463,7 @@ window.addEventListener('resize',BodyResized,false);
           context.fillStyle = wallColor;
           context.fillRect(brick.x, brick.y, brick.width, brick.height)
           if (collides(snake.cells[0],brick)) {
+            vibro();
             hitSoundPlay();
             gameOver();
           }
@@ -461,6 +482,7 @@ window.addEventListener('resize',BodyResized,false);
         context.fillRect(windowWall.part8.x, windowWall.part8.y, windowWall.part8.width, windowWall.part8.height);
         // есди змейка столкнулась с какой-либо частью стены - игра окончена
         if (collides(snake,windowWall.part1) || collides(snake,windowWall.part2) || collides(snake,windowWall.part3) || collides(snake,windowWall.part4)|| collides(snake,windowWall.part5)|| collides(snake,windowWall.part6) || collides(snake,windowWall.part7) || collides(snake,windowWall.part8)) {
+          vibro();
           hitSoundPlay();
           gameOver();
           console.log('wall collision');
@@ -475,6 +497,7 @@ window.addEventListener('resize',BodyResized,false);
         context.fillRect(wall.part3.x, wall.part3.y, wall.part3.width, wall.part3.height);
         context.fillRect(wall.part4.x, wall.part4.y, wall.part4.width, wall.part4.height);
         if (collides(snake.cells[0],wall.part1) || collides(snake.cells[0],wall.part2) || collides(snake.cells[0],wall.part3) || collides(snake.cells[0],wall.part4)) {
+          vibro();
           hitSoundPlay();
           gameOver();
           console.log('wall collision');
@@ -491,21 +514,21 @@ window.addEventListener('resize',BodyResized,false);
       // Это сделано для того, чтобы не разворачивать весь массив со змейкой на лету и не усложнять код игры.
       // Стрелка влево
       // Если нажата стрелка влево, и при этом змейка никуда не движется по горизонтали…
-      if (eo.which === 37) {
+      if (eo.which === 37 || eo.which === 65) {
         // то даём ей движение по горизонтали, влево, а вертикальное — останавливаем
         // Та же самая логика будет и в остальных кнопках
         snake.setDirection('left');
       }
       // Стрелка вверх
-      else if (eo.which === 38) {
+      else if (eo.which === 38 || eo.which === 87) {
         snake.setDirection('top');
       }
       // Стрелка вправо
-      else if (eo.which === 39) {
+      else if (eo.which === 39 || eo.which === 68) {
         snake.setDirection('right');
       }
       // Стрелка вниз
-      else if (eo.which === 40) {
+      else if (eo.which === 40 || eo.which === 83) {
         snake.setDirection('bottom');
       }
     };
