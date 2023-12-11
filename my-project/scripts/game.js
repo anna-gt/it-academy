@@ -4,10 +4,8 @@ window.addEventListener('resize',BodyResized,false);
   function BodyResized() { ResizeCanvas();}
   function ResizeCanvas() {
     var wrapper = document.querySelector('.game-wrapper');
-    //console.log('Ширина контейнера: '+wrapper.offsetWidth);
     var NewCanvasWidth = wrapper.offsetWidth;
     var NewCanvasHeight = wrapper.offsetWidth;
-    //console.log('Размер Canvas: '+NewCanvasWidth+'x'+NewCanvasHeight);
 
     var canvas = document.getElementById('game');
     canvas.width = NewCanvasWidth;
@@ -70,7 +68,6 @@ window.addEventListener('resize',BodyResized,false);
 
   var currentScore;
   var gameStat = 0; // 1 - игра идет, 2 - пауза, 3 - игра окончена
-  console.log(gameStat);
   var mute = false;
   var vibration = true;
 
@@ -124,21 +121,9 @@ window.addEventListener('resize',BodyResized,false);
     var context = canvas.getContext('2d');
     var width = canvas.width;
     var height = canvas.height;
-    var food;
+    var foodImg;
     // Размер одной клеточки на поле — 1/25 часть поля
     var grid = width/25;
-    // Служебная переменная, которая отвечает за скорость змейки
-    // var count = 0;
-
-    function drawCircle (x, y, radius, fillCircle) {
-      context.beginPath();
-      context.arc(x, y, radius, 0, Math.PI * 2, false);
-      if (fillCircle) {
-        context.fill();
-      } else {
-        context.stroke();
-      }
-    };
 
     // конструктор класса змеек
     function SnakeType() {
@@ -228,35 +213,23 @@ window.addEventListener('resize',BodyResized,false);
       }
     };
 
-      // Конструктор класса яблок
-    function AppleType()  {
+      // Конструктор класса еды
+    function FoodType()  {
       // спасаем this в self
       const self = this;
-      // Начальные координаты яблока
+      // Начальные координаты 
       self.x = grid*5;
       self.y = grid*5;
       self.width = grid;
       self.height = grid;
-      // Рисуем новое яблочко
+      // Рисуем новую еду
       // Помним, что холст разбит на ячейки — 25 в каждую сторону
-       // Ставим яблочко в случайное место
+       // Ставим еду в случайное место
        // Не ставим по краям - там могут быть стены
       self.getRandomPoint = function() {
         self.x = randomDiap(3, 23) * grid;
         self.y = randomDiap(2, 23) * grid;
        };
-      self.check = function(arr) {
-        for (let i = 0; i < arr1.length; i++) {
-          if (arr[i].x == self.x) 
-            return false;
-          return true;
-        }
-      };
-      self.update = function(arr1, arr2) {
-        self.getRandomPoint();
-        if (!self.check(arr1) || !self.check(arr2)) 
-          self.update(arr1, arr2);
-        };
     };
 
     // конструктор класса стен с окнами
@@ -361,9 +334,9 @@ window.addEventListener('resize',BodyResized,false);
       }
     }
 
-    // создаем яблоко, змейку, стены и кирпичи
+    // создаем конфету, змейку, стены и кирпичи
     var snake = new SnakeType;
-    var apple = new AppleType;
+    var candy = new FoodType;
     var windowWall = new WallWithWindows;
     var wall = new WallType;
     var bricks = new BrickType;
@@ -371,7 +344,7 @@ window.addEventListener('resize',BodyResized,false);
       bricks.create13();
     if (difficultyLevel === 3) {
       bricks.create13();
-      //bricks.create24();
+      bricks.create24();
     }
     
     // если уровень сложности не 1 - убираем границу поля, вместо этого будут стены
@@ -380,17 +353,6 @@ window.addEventListener('resize',BodyResized,false);
 
     // Игровой цикл — основной процесс, внутри которого будет всё происходить
     function loop() {
-      // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. 
-      // Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. 
-      // Было 60 кадров в секунду, станет 15.
-      //var gameLoop = requestAnimationFrame(loop);
-      // Игровой код выполнится только один раз из восьми, в этом и суть замедления кадров, 
-      // а пока переменная count меньше восьми, код выполняться не будет.
-      //if (++count < 8) {
-       // return;
-      //}
-      // Обнуляем переменную скорости
-      // count = 0;
       function gameOver() {
         gameStat = 3;
         clearInterval(gameInterval);
@@ -410,12 +372,10 @@ window.addEventListener('resize',BodyResized,false);
       if (gameStat === 1) 
         snake.update();
       // Рисуем еду
-      food = new Image();
-      food.src = "images/candy.svg";
+      foodImg = new Image();
+      foodImg.src = "images/candy.svg";
       context.shadowBlur = 0;
-      context.drawImage(food, apple.x, apple.y, apple.width, apple.height);
-      //context.fillStyle = 'red';
-      //context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+      context.drawImage(foodImg, candy.x, candy.y, candy.width, candy.height);
       // Одно движение змейки — один новый нарисованный квадратик 
       // Обрабатываем каждый элемент змейки
       snake.cells.forEach(function (cell, index) {
@@ -438,14 +398,19 @@ window.addEventListener('resize',BodyResized,false);
 
         context.fillRect(cell.x, cell.y, cell.height, cell.width);
     
-        // Если змейка добралась до яблока...
-        if (cell.x === apple.x && cell.y === apple.y) {
+        // Если змейка добралась до конфеты...
+        if (cell.x === candy.x && cell.y === candy.y) {
           // увеличиваем длину змейки
           pickSoundPlay();
           snake.maxCells++;
           currentScore++;
-          apple.getRandomPoint();
-          }
+          candy.getRandomPoint();
+          // проверяем, не создалась ли новая конфета внутри кирпича
+          for (let i=0; i<bricks.parts.lenght; i++) {
+            if (bricks.parts[i].x === candy.x && bricks.parts[i].y === candy.y)
+            candy.getRandomPoint();
+            }
+          };
           // Проверяем, не столкнулась ли змея сама с собой
           // Для этого перебираем весь массив и смотрим, есть ли у нас в массиве змейки две клетки с одинаковыми координатами 
         for (var i = index + 1; i < snake.cells.length; i++) {
@@ -509,46 +474,51 @@ window.addEventListener('resize',BodyResized,false);
     document.addEventListener('keydown', direction);
     function direction(eo) {
       eo = eo || window.event;
-      // Дополнительно проверяем такой момент: если змейка движется, например, влево, 
-      // то ещё одно нажатие влево или вправо ничего не поменяет — змейка продолжит двигаться в ту же сторону, что и раньше. 
-      // Это сделано для того, чтобы не разворачивать весь массив со змейкой на лету и не усложнять код игры.
       // Стрелка влево
-      // Если нажата стрелка влево, и при этом змейка никуда не движется по горизонтали…
+      // Если нажата стрелка влево или A, и при этом змейка никуда не движется по горизонтали…
       if (eo.which === 37 || eo.which === 65) {
         // то даём ей движение по горизонтали, влево, а вертикальное — останавливаем
         // Та же самая логика будет и в остальных кнопках
         snake.setDirection('left');
       }
-      // Стрелка вверх
+      // Стрелка вверх или W
       else if (eo.which === 38 || eo.which === 87) {
         snake.setDirection('top');
       }
-      // Стрелка вправо
+      // Стрелка вправо или D
       else if (eo.which === 39 || eo.which === 68) {
         snake.setDirection('right');
       }
-      // Стрелка вниз
+      // Стрелка вниз или S
       else if (eo.which === 40 || eo.which === 83) {
         snake.setDirection('bottom');
       }
     };
     document.getElementById('left-b').addEventListener('click',setLeftDirection);
     function setLeftDirection(eo) {
+      eo = eo || window.event;
       snake.setDirection('left');
     };
     document.getElementById('right-b').addEventListener('click',setRightDirection);
     function setRightDirection(eo) {
+      eo = eo || window.event;
       snake.setDirection('right');
     };
     document.getElementById('up-b').addEventListener('click',setUpDirection);
     function setUpDirection(eo) {
+      eo = eo || window.event;
       snake.setDirection('top');
     };
     document.getElementById('down-b').addEventListener('click',setDownDirection);
     function setDownDirection(eo) {
+      eo = eo || window.event;
       snake.setDirection('bottom');
     };
+    var wrapper = $('.game-wrapper');
+    wrapper.on('swipeLeft',setLeftDirection);
+    wrapper.on('swipeRight',setRightDirection);
+    wrapper.on('swipeUp',setUpDirection);
+    wrapper.on('swipeDown',setDownDirection);
 
     const gameInterval = setInterval(loop, 150);
-    //requestAnimationFrame(loop);
   }
