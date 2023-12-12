@@ -6,10 +6,12 @@ window.addEventListener('resize',BodyResized,false);
     var wrapper = document.querySelector('.game-wrapper');
     var NewCanvasWidth = wrapper.offsetWidth;
     var NewCanvasHeight = wrapper.offsetWidth;
+    console.log(wrapper.offsetWidth);
 
     var canvas = document.getElementById('game');
     canvas.width = NewCanvasWidth;
     canvas.height = NewCanvasHeight;
+    console.log(canvas.width);
     //ReDrawCanvas(NewCanvasWidth/DrawCanvasWidth);
   }
   // функция для определения столкновения двух объектов
@@ -347,10 +349,6 @@ window.addEventListener('resize',BodyResized,false);
       bricks.create24();
     }
     
-    // если уровень сложности не 1 - убираем границу поля, вместо этого будут стены
-    if (difficultyLevel != 1) 
-      document.querySelector('canvas').style.border = 'none';
-
     // Игровой цикл — основной процесс, внутри которого будет всё происходить
     function loop() {
       function gameOver() {
@@ -497,21 +495,25 @@ window.addEventListener('resize',BodyResized,false);
     document.getElementById('left-b').addEventListener('click',setLeftDirection);
     function setLeftDirection(eo) {
       eo = eo || window.event;
+      eo.preventDefault();
       snake.setDirection('left');
     };
     document.getElementById('right-b').addEventListener('click',setRightDirection);
     function setRightDirection(eo) {
       eo = eo || window.event;
+      eo.preventDefault();
       snake.setDirection('right');
     };
     document.getElementById('up-b').addEventListener('click',setUpDirection);
     function setUpDirection(eo) {
       eo = eo || window.event;
+      eo.preventDefault();
       snake.setDirection('top');
     };
     document.getElementById('down-b').addEventListener('click',setDownDirection);
     function setDownDirection(eo) {
       eo = eo || window.event;
+      eo.preventDefault();
       snake.setDirection('bottom');
     };
     var wrapper = $('.game-wrapper');

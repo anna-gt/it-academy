@@ -48,7 +48,7 @@
     var pageHTML = "";
     switch ( SPAState.pagename ) {
       case 'menu':
-        pageHTML+="<div class='menu-wrapper'><h3 class='snake-word'><span id='one'>З</span><span id='two'>М</span><span id='three'>Е</span><span id='four'>Й</span><span id='five'>К</span><span id='six'>А</span></h3><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='#rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='#records'>Таблица рекордов</a></li></ul></div>";
+        pageHTML+="<section><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></section><div class='menu-wrapper'><h3 class='snake-word'><span id='one'>З</span><span id='two'>М</span><span id='three'>Е</span><span id='four'>Й</span><span id='five'>К</span><span id='six'>А</span></h3><ul><li class='menu-item'><a href='#game'>Игра</a></li><li class='menu-item'><a href='#rules'>Правила</a></li><li class='menu-item'><a href='#levels'>Уровень сложности: <span id='level-point'></span></a></li><li class='menu-item'><a href='#records'>Таблица рекордов</a></li></ul></div>";
         document.querySelector('.wrapper').innerHTML = pageHTML;
         var levelSpan = document.getElementById('level-point');
         if (difficultyLevel === 1) 
@@ -146,7 +146,6 @@
             pauseBttn.title = 'Пауза';
           }
         };
-
         ResizeCanvas();
         startGame();
         if (gameStat != 3)
