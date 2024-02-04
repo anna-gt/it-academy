@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 
-import './IShopItem.css';
 
 class IShopItem extends React.Component {
   render() {
