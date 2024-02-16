@@ -1,0 +1,9 @@
+.IShopItem:hover {
+	cursor: pointer;
+}
+.IShopItemSelected {
+	background-color: rgb(207, 203, 200);
+}
+button {
+	padding: 4px;
+}

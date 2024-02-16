@@ -7,7 +7,7 @@ const iShopName='Товары для питомцев';
 const names = 'Наименование';
 const images = 'Изображение';
 const prices = 'Цена, р';
-const qts = 'Остаток на складе, шт';
+const qts = 'Остаток, шт';
 
 import itemsArr from './items.json';
 

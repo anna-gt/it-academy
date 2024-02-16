@@ -6,11 +6,11 @@
   font-size: 30px;
 }
 td {
-  padding: 20px;
+  padding: 10px;
 }
-thead {
+thead .IShopHeader {
   font-weight: bold;
-  background-color: rgb(232, 232, 197);
+	height: 50px;
 }
 caption {
   font-weight: bold;

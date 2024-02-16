@@ -1,6 +1,6 @@
 [
-  {"id":1, "name":"Миска для корма", "price":20, "photoUrl":"https://e-zoo.by/upload/iblock/2fa/4011905247700_1.jpg", "qt":10},
-  {"id":2, "name":"Когтеточка", "price":60, "photoUrl":"https://e-zoo.by/upload/iblock/957/4011905043067_1.jpg", "qt":3},
-  {"id":3, "name":"Домик", "price":65, "photoUrl":"https://e-zoo.by/images/cache/_thumb_800x800xin_upload_iblock_898_4815429000649_1.JPG", "qt":2},
-  {"id":4, "name":"Игрушка", "price":3, "photoUrl":"https://e-zoo.by/upload/iblock/d07/4620003556654_1.png", "qt":20}
+  {"id":0, "name":"Миска для корма", "price":20, "photoUrl":"components/img/plate.png", "qt":10},
+  {"id":1, "name":"Когтеточка", "price":60, "photoUrl":"components/img/scratching.jpeg", "qt":3},
+  {"id":2, "name":"Домик", "price":65, "photoUrl":"components/img/house.jpeg", "qt":2},
+  {"id":3, "name":"Игрушка", "price":3, "photoUrl":"components/img/mouse.jpg", "qt":20}
 ]
