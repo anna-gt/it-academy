@@ -17,8 +17,7 @@ class IShop extends React.Component {
 		console.log(id);
 		this.setState({selectedItemKey: id});
 	}
-	deletedItem = (id,event) => {
-		event.stopPropagation();
+	deletedItem = (id) => {
 		let updateItems = this.state.currentItems.filter((item) => item.id !== id);
 		console.log(updateItems);
 		this.setState({currentItems: updateItems});

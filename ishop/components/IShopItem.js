@@ -6,8 +6,9 @@ class IShopItem extends React.Component {
 	itemSelected = eo => {
 		this.props.selectedItem(this.props.id);
 	}
-	itemDeleted = eo => {
-		this.props.deletedItem(this.props.id,eo);
+	itemDeleted = event => {
+		event.stopPropagation();
+		this.props.deletedItem(this.props.id);
 	}
   render() {
     return (
