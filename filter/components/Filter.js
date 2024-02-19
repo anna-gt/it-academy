@@ -26,8 +26,8 @@ class Filter extends React.Component {
 		this.setState({list:words})
 	}
 	render() {
-		const wordsCode = this.state.list.map(word=>
-			<div>{word}</div>)
+		const wordsCode = this.state.list.map((word,i)=>
+			<div key={i}>{word}</div>)
 		return (
 			<div>
 			<input type="checkbox" checked={this.state.isSort} onChange={this.sortChanged}></input>
