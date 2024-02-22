@@ -12,7 +12,7 @@ class BR2JSX extends React.Component {
 		const textArr = this.props.text.split(pattern);
 		const finalText = textArr.map((word,i) => 
 		<React.Fragment key={i}>
-			{word} <br />
+			{i!==0 && <br /> }{word} 
 		</React.Fragment>
 			);
 		return (
