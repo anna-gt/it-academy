@@ -5,6 +5,7 @@ import './IShop.css';
 import IShopName from './IShopName';
 import IShopItem from './IShopItem';
 import IShopHeader from './IShopHeader';
+import IShopCard from './IShopCard';
 
 class IShop extends React.Component {
 
@@ -27,7 +28,7 @@ class IShop extends React.Component {
     const itemsCode = this.state.currentItems.map( i =>
       <IShopItem 
 			key={i.id} 
-			id={i.id}
+			id={i.id+10}
 			name = {i.name} 
 			price = {i.price} 
 			qt = {i.qt} 
@@ -36,19 +37,32 @@ class IShop extends React.Component {
 			selectedItem = {this.selectedItem}
 			deletedItem = {this.deletedItem} />
     );
+		const itemsCards = this.state.currentItems.map(i =>
+			<IShopCard 
+			id={i.id+10}
+			name = {i.name} 
+			price = {i.price} 
+			qt = {i.qt} 
+			image = {i.photoUrl}
+			selectedId = {this.state.selectedItemKey}
+			/>
+			)
 
     return (
-        <table>
-          <caption><IShopName name = {this.props.name} /></caption>
-          <thead>
-            <IShopHeader 
-						names = {this.props.names} 
-						images = {this.props.images} 
-						prices = {this.props.prices} 
-						qts = {this.props.qts} />
-          </thead>
-          <tbody>{itemsCode}</tbody>
-          </table>
+        <div class='IShop'>
+					<table>
+						<caption><IShopName name = {this.props.name} /></caption>
+						<thead>
+							<IShopHeader 
+											names = {this.props.names} 
+											images = {this.props.images} 
+											prices = {this.props.prices} 
+											qts = {this.props.qts} />
+						</thead>
+						<tbody>{itemsCode}</tbody>
+						</table>
+						{this.state.selectedItemKey && itemsCards}
+				</div>
     )
 
   }

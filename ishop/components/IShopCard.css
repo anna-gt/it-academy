@@ -1,0 +1,22 @@
+.ShopItemCard {
+	border: 2px solid;
+	width: 500px;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	font-size: 18px;
+}
+.ShopItemCard img {
+	float: left;
+}
+.IShopItemDesc {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+.IShopItemDesc div {
+	margin-top: 10px;
+}
+.IShopItemDesc span {
+	font-weight: bold;
+}

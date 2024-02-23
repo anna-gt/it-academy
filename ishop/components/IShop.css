@@ -1,9 +1,9 @@
 ﻿table {
   table-layout: fixed;
-  width: 100%;
+  width: 50%;
   border-collapse: collapse;
   border: 3px solid rgb(46, 46, 43);
-  font-size: 30px;
+  font-size: 20px;
 }
 td {
   padding: 10px;
@@ -16,4 +16,9 @@ caption {
   font-weight: bold;
   font-size: 40px;
   padding: 30px;
+}
+.IShop {
+	display: flex;
+	align-items: center;
+	column-gap: 60px;
 }
