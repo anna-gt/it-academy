@@ -10,6 +10,10 @@ class IShopItem extends React.Component {
 		event.stopPropagation();
 		this.props.deletedItem(this.props.id);
 	}
+	itemEditing = eo => {
+		eo.stopPropagation();
+		this.props.editingItem(this.props.id);
+	}
   render() {
 		const isSelected = this.props.selectedId;
     return (
@@ -19,7 +23,8 @@ class IShopItem extends React.Component {
           <td><img src={this.props.image} alt={this.props.name} width = '100' height = '100'/></td>
           <td>{this.props.price}</td>
           <td>{this.props.qt}</td>
-					<td><button onClick={this.itemDeleted}>Удалить товар</button></td>
+					<td><button onClick = {this.itemEditing}>Редактировать товар</button></td>
+					<td><button onClick = {this.itemDeleted}>Удалить товар</button></td>
         </tr>
     )
 

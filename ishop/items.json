@@ -1,5 +1,5 @@
 [
-  {"id":0, "name":"Миска для корма", "price":20, "photoUrl":"components/img/plate.png", "qt":10},
+  {"id":4, "name":"Миска для корма", "price":20, "photoUrl":"components/img/plate.png", "qt":10},
   {"id":1, "name":"Когтеточка", "price":60, "photoUrl":"components/img/scratching.jpeg", "qt":3},
   {"id":2, "name":"Домик", "price":65, "photoUrl":"components/img/house.jpeg", "qt":2},
   {"id":3, "name":"Игрушка", "price":3, "photoUrl":"components/img/mouse.jpg", "qt":20}

@@ -6,62 +6,80 @@ import IShopName from './IShopName';
 import IShopItem from './IShopItem';
 import IShopHeader from './IShopHeader';
 import IShopCard from './IShopCard';
+import IShopEditor from './IShopEditor';
 
 class IShop extends React.Component {
 
 	state = {
-		selectedItemKey: null,
+		selectedItemId: null,
 		currentItems: this.props.items,
+		editingItemId: null,
 	}
 
 	selectedItem = (id) => {
-		console.log(id);
-		this.setState({selectedItemKey: id});
+		this.setState({selectedItemId: id});
+		if (this.state.editingItemId !==id )
+			this.setState({editingItemId: null})
 	}
 	deletedItem = (id) => {
 		let updateItems = this.state.currentItems.filter((item) => item.id !== id);
-		console.log(updateItems);
-		this.setState({currentItems: updateItems});
+		this.setState({currentItems: updateItems, selectedItemId: null});
+	}
+	editingItem = (id) => {
+		this.setState({editingItemId: id});
+		this.setState({selectedItemId: id});
+	}
+	quit = () => {
+		this.setState({editingItemId: null});
+		this.setState({selectedItemId: null});
 	}
   render() {
 
     const itemsCode = this.state.currentItems.map( i =>
       <IShopItem 
 			key={i.id} 
-			id={i.id+10}
+			id={i.id}
 			name = {i.name} 
 			price = {i.price} 
 			qt = {i.qt} 
 			image = {i.photoUrl}
-			selectedId = {this.state.selectedItemKey}
+			selectedId = {this.state.selectedItemId}
 			selectedItem = {this.selectedItem}
-			deletedItem = {this.deletedItem} />
+			deletedItem = {this.deletedItem}
+			editingItem = {this.editingItem} />
     );
-		const itemsCards = this.state.currentItems.map(i =>
-			<IShopCard 
-			id={i.id+10}
-			name = {i.name} 
-			price = {i.price} 
-			qt = {i.qt} 
-			image = {i.photoUrl}
-			selectedId = {this.state.selectedItemKey}
-			/>
-			)
+		const [shownItem] = this.state.currentItems.filter(i => i.id===this.state.selectedItemId);
+		const itemsCard = <IShopCard 
+			product = {shownItem}
+		/>
+		// const itemsCards = this.state.currentItems.map(i =>
+		// 	<IShopCard 
+		// 	key = {i.id}
+		// 	id={i.id}
+		// 	name = {i.name} 
+		// 	price = {i.price} 
+		// 	qt = {i.qt} 
+		// 	image = {i.photoUrl}
+		// 	selectedId = {this.state.selectedItemId}
+		// 	editingId = {this.state.editingItemId}
+		// 	quit = {this.quit}
+		// 	/>
+		// 	)
 
     return (
-        <div class='IShop'>
+        <div className='IShop'>
 					<table>
 						<caption><IShopName name = {this.props.name} /></caption>
 						<thead>
 							<IShopHeader 
-											names = {this.props.names} 
-											images = {this.props.images} 
-											prices = {this.props.prices} 
-											qts = {this.props.qts} />
+								names = {this.props.names} 
+								images = {this.props.images} 
+								prices = {this.props.prices} 
+								qts = {this.props.qts} />
 						</thead>
 						<tbody>{itemsCode}</tbody>
 						</table>
-						{this.state.selectedItemKey && itemsCards}
+						{this.state.selectedItemId && itemsCard}
 				</div>
     )
 
