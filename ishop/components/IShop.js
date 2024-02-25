@@ -41,7 +41,7 @@ class IShop extends React.Component {
 			this.setState({currentItems: updateItems})
 		}
 	};
-	quit = () => {
+	cancel = () => {
 		this.setState({editingItemId: null});
 		this.setState({selectedItemId: null});
 	}
@@ -64,7 +64,7 @@ class IShop extends React.Component {
 		const [shownItem] = this.state.currentItems.filter(i => i.id===this.state.selectedItemId);
 		const itemsCard = <IShopCard product = {shownItem} />
 		const [editingItem] = this.state.currentItems.filter(i => i.id===this.state.editingItemId);
-		const itemsEditor = <IShopEditor product = {editingItem} cbSave={this.save}/>
+		const itemsEditor = <IShopEditor key = {this.state.editingItemId} product = {editingItem} cbSave={this.save} cbCancel={this.cancel}/>
 		
     return (
         <div className='IShop'>

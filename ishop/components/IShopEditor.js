@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import './IShopEditor.css';
 
 class IShopEditor extends React.Component {
 
@@ -11,26 +12,40 @@ class IShopEditor extends React.Component {
 			qt: PropTypes.number,
 			photoUrl: PropTypes.string
 		}),
-		cbSave: PropTypes.func
+		cbSave: PropTypes.func,
+		cbCancel: PropTypes.func
 	}
 	state = {
 		name: this.props.product.name,
 		price: this.props.product.price,
 		qt: this.props.product.qt,
-		photoUrl: this.props.product.photoUrl
+		photoUrl: this.props.product.photoUrl,
+		nameError: '',
+		urlError: '',
+		priceError: '',
+		qtError: '',
+		valid: true
 	}
 	nameChanged = (eo) => {
-		this.setState({name: eo.target.value})
+		this.setState({name: eo.target.value},this.validate)
 	};
 	imgChanged = (eo) => {
-		this.setState({photoUrl: eo.target.value})
+		this.setState({photoUrl: eo.target.value},this.validate)
 	};
 	priceChanged = (eo) => {
-		this.setState({price: eo.target.value})
+		this.setState({price: eo.target.value},this.validate)
 	};
 	qtChanged = (eo) => {
-		this.setState({qt: eo.target.value})
+		this.setState({qt: eo.target.value},this.validate)
 	};
+	validate = () => {
+		const nameError = this.state.name ? "" : "Поле не должно быть пустым!";
+		const urlError = this.state.photoUrl ? "" : "Поле не должно быть пустым!";
+		const priceError = this.state.price ? "" : "Поле не должно быть пустым!";
+		const qtError = this.state.qt ? "" : "Поле не должно быть пустым!";
+		const valid = !nameError && !urlError && !priceError && !qtError;
+		this.setState({nameError,urlError,priceError,qtError,valid})
+	}
 	save = () => {
 		this.props.cbSave({
 			name: this.state.name,
@@ -40,21 +55,36 @@ class IShopEditor extends React.Component {
 		})
 	};
 	cancel = eo => {
-		this.props.quit();
+		this.props.cbCancel();
 	}
 	render() {
-		const isEditing = this.props.editingId;
 			return (
 				<div className='ShopItemCardEdit'>
-				<span>Название:</span>
-				<input type='text' value = {this.state.name} onChange={this.nameChanged}/><br />
-				<span>URL изображения:</span>
-				<input type='text' value = {this.state.photoUrl} onChange={this.imgChanged}/><br />
-				<span>Цена, руб:</span>
-				<input type='text' value = {this.state.price} onChange={this.priceChanged}/><br />
-				<span>Остаток на складе, шт:</span>
-				<input type='text' value = {this.state.qt} onChange={this.qtChanged}/><br />
-				<button onClick={this.save}>Сохранить</button>
+				<div className='ShopItemCardEdit_item'>
+					<span>Название:</span>
+					<input type='text' value = {this.state.name} onChange={this.nameChanged}/>
+				</div>
+				<span className ='ShopItemCardEdit_error'>{this.state.nameError}</span>
+				<br />
+				<div className='ShopItemCardEdit_item'>
+					<span>URL изображения:</span>
+					<input type='text' value = {this.state.photoUrl} onChange={this.imgChanged}/>
+				</div>
+				<span className ='ShopItemCardEdit_error'>{this.state.urlError}</span>
+				<br />
+				<div className='ShopItemCardEdit_item'>
+					<span>Цена, руб:</span>
+					<input type='text' value = {this.state.price} onChange={this.priceChanged}/>
+				</div>
+				<span className ='ShopItemCardEdit_error'>{this.state.priceError}</span>
+				<br />
+				<div className='ShopItemCardEdit_item'>
+					<span>Остаток на складе, шт:</span>
+					<input type='text' value = {this.state.qt} onChange={this.qtChanged}/>
+				</div>
+				<span className ='ShopItemCardEdit_error'>{this.state.qtError}</span>
+				<br />
+				<button onClick={this.save} disabled={!this.state.valid}>Сохранить</button>
 				<button onClick = {this.cancel}>Выйти</button>
 			</div>
 			)		

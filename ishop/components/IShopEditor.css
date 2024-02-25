@@ -1,0 +1,19 @@
+.ShopItemCardEdit {
+	font-size: 20px;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	padding: 20px;
+}
+.ShopItemCardEdit_item {
+	display: flex;
+	justify-content: space-between;
+}
+.ShopItemCardEdit span {
+	font-weight: bold;
+}
+.ShopItemCardEdit_error {
+	color: red;
+	font-size: 12px;
+	display: block;
+	text-align: right;
+}
