@@ -1,8 +1,23 @@
 ﻿import React from 'react';
 import './IShopItem.css';
+import PropTypes from 'prop-types';
 
 
 class IShopItem extends React.Component {
+
+	static propTypes = {
+		id: PropTypes.number,
+		name: PropTypes.string,
+		image: PropTypes.string,
+		price: PropTypes.number,
+		qt: PropTypes.number,
+		editingId: PropTypes.number,
+		selectedId: PropTypes.number,
+		selectedItem: PropTypes.func,
+		editingItem: PropTypes.func,
+		deletedItem: PropTypes.func,
+	}
+
 	itemSelected = eo => {
 		this.props.selectedItem(this.props.id);
 	}
@@ -16,8 +31,13 @@ class IShopItem extends React.Component {
 	}
   render() {
 		const isSelected = this.props.selectedId;
+		const isEditing = this.props.editingId;
     return (
-        <tr className={(isSelected===this.props.id)?'IShopItem IShopItemSelected':'IShopItem'}
+        <tr className={((isSelected===this.props.id)||((isEditing===this.props.id)))
+					?
+					'IShopItem IShopItemSelected'
+					:
+					'IShopItem'}
 						onClick={this.itemSelected}>
           <td>{this.props.name}</td>
           <td><img src={this.props.image} alt={this.props.name} width = '100' height = '100'/></td>
