@@ -13,7 +13,7 @@ class BR2JSX extends React.Component {
 		const lines = [];
 		for (let i=0; i<words.length; i++) {
 			if (i) 
-				lines.push(<br />)
+				lines.push(<br key={i}/>)
 			lines.push(words[i])
 		}
 		return (
