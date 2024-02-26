@@ -14,12 +14,15 @@ class IShop extends React.Component {
 		selectedItemId: null,
 		currentItems: this.props.items,
 		editingItemId: null,
+		disabled: false
 	}
 
 	selectedItem = (id) => {
-		this.setState({selectedItemId: id});
+		if (!this.state.disabled) {
+			this.setState({selectedItemId: id});
 		if (this.state.editingItemId !==id )
 			this.setState({editingItemId: null})
+		}	
 	};
 	deletedItem = (id) => {
 		let updateItems = this.state.currentItems.filter((item) => item.id !== id);
@@ -44,7 +47,12 @@ class IShop extends React.Component {
 	cancel = () => {
 		this.setState({editingItemId: null});
 		this.setState({selectedItemId: null});
+		this.setState({disabled: false})
 	}
+	disable = () => {
+		this.setState({disabled: true})
+	}
+
   render() {
 
     const itemsCode = this.state.currentItems.map( i =>
@@ -55,6 +63,7 @@ class IShop extends React.Component {
 			price = {i.price} 
 			qt = {i.qt} 
 			image = {i.photoUrl}
+			disabled = {this.state.disabled}
 			selectedId = {this.state.selectedItemId}
 			editingId = {this.state.editingItemId}
 			selectedItem = {this.selectedItem}
@@ -64,7 +73,13 @@ class IShop extends React.Component {
 		const [shownItem] = this.state.currentItems.filter(i => i.id===this.state.selectedItemId);
 		const itemsCard = <IShopCard product = {shownItem} />
 		const [editingItem] = this.state.currentItems.filter(i => i.id===this.state.editingItemId);
-		const itemsEditor = <IShopEditor key = {this.state.editingItemId} product = {editingItem} cbSave={this.save} cbCancel={this.cancel}/>
+		const itemsEditor = <IShopEditor 
+		key = {this.state.editingItemId} 
+		product = {editingItem} 
+		cbSave={this.save} 
+		cbCancel={this.cancel}
+		cbDisable={this.disable}
+		/>
 		
     return (
         <div className='IShop'>

@@ -13,7 +13,8 @@ class IShopEditor extends React.Component {
 			photoUrl: PropTypes.string
 		}),
 		cbSave: PropTypes.func,
-		cbCancel: PropTypes.func
+		cbCancel: PropTypes.func,
+		cbDisable: PropTypes.func
 	}
 	state = {
 		name: this.props.product.name,
@@ -27,15 +28,19 @@ class IShopEditor extends React.Component {
 		valid: true
 	}
 	nameChanged = (eo) => {
+		this.props.cbDisable();
 		this.setState({name: eo.target.value},this.validate)
 	};
 	imgChanged = (eo) => {
+		this.props.cbDisable();
 		this.setState({photoUrl: eo.target.value},this.validate)
 	};
 	priceChanged = (eo) => {
+		this.props.cbDisable();
 		this.setState({price: eo.target.value},this.validate)
 	};
 	qtChanged = (eo) => {
+		this.props.cbDisable();
 		this.setState({qt: eo.target.value},this.validate)
 	};
 	validate = () => {

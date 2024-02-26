@@ -13,6 +13,7 @@ class IShopItem extends React.Component {
 		qt: PropTypes.number,
 		editingId: PropTypes.number,
 		selectedId: PropTypes.number,
+		disabled: PropTypes.bool,
 		selectedItem: PropTypes.func,
 		editingItem: PropTypes.func,
 		deletedItem: PropTypes.func,
@@ -43,8 +44,8 @@ class IShopItem extends React.Component {
           <td><img src={this.props.image} alt={this.props.name} width = '100' height = '100'/></td>
           <td>{this.props.price}</td>
           <td>{this.props.qt}</td>
-					<td><button onClick = {this.itemEditing}>Редактировать товар</button></td>
-					<td><button onClick = {this.itemDeleted}>Удалить товар</button></td>
+					<td><button onClick = {this.itemEditing} disabled={this.props.disabled}>Редактировать товар</button></td>
+					<td><button onClick = {this.itemDeleted} disabled={this.props.disabled}>Удалить товар</button></td>
         </tr>
     )
 
