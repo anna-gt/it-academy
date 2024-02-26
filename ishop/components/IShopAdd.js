@@ -28,10 +28,10 @@ class IShopAdd extends React.Component {
 		this.setState({photoUrl: eo.target.value},this.validate)
 	};
 	priceChanged = (eo) => {
-		this.setState({price: eo.target.value},this.validate)
+		this.setState({price: parseFloat(eo.target.value)},this.validate)
 	};
 	qtChanged = (eo) => {
-		this.setState({qt: eo.target.value},this.validate)
+		this.setState({qt: parseFloat(eo.target.value)},this.validate)
 	};
 	validate = () => {
 		const nameError = this.state.name ? "" : "Поле не должно быть пустым!";
@@ -43,6 +43,7 @@ class IShopAdd extends React.Component {
 	}
 	save = () => {
 		this.props.cbSave({
+			id: this.props.id,
 			name: this.state.name,
 			price: this.state.price,
 			qt: this.state.qt,
@@ -73,13 +74,13 @@ class IShopAdd extends React.Component {
 				<br />
 				<div className='ShopItemCardEdit_item'>
 					<span>Цена, руб:</span>
-					<input type='text' value = {this.state.price} onChange={this.priceChanged}/>
+					<input type='number' value = {this.state.price} onChange={this.priceChanged}/>
 				</div>
 				<span className ='ShopItemCardEdit_error'>{this.state.priceError}</span>
 				<br />
 				<div className='ShopItemCardEdit_item'>
 					<span>Остаток на складе, шт:</span>
-					<input type='text' value = {this.state.qt} onChange={this.qtChanged}/>
+					<input type='number' value = {this.state.qt} onChange={this.qtChanged}/>
 				</div>
 				<span className ='ShopItemCardEdit_error'>{this.state.qtError}</span>
 				<br />

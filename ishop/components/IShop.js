@@ -57,7 +57,7 @@ class IShop extends React.Component {
 				item.qt = qt;
 				item.image = image
 			}
-			this.setState({currentItems: updateItems})
+			this.setState({currentItems: updateItems, editingItemId: null, selectedItem: null, disabled: false})
 		}
 	};
 	cancel = () => {
@@ -67,9 +67,10 @@ class IShop extends React.Component {
 	openAdditonField = (eo) => {
 		this.setState({editingItemId: null, selectedItemId: null, addingItem: true, disabled: true});
 	}
-	add = ({name,price,qt,image}) => {
+	add = ({id,name,price,qt,image}) => {
 		let updateItems = this.state.currentItems.slice();
 		let newItem = {
+			id: id,
 			name: name,
 			price: price,
 			qt: qt,
