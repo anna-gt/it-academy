@@ -8,16 +8,17 @@ class BR2JSX extends React.Component {
 	}
 
 	render() {
-		const pattern = /<br\s?\/?>/;
-		const textArr = this.props.text.split(pattern);
-		const finalText = textArr.map((word,i) => 
-		<React.Fragment key={i}>
-			{i!==0 && <br /> }{word} 
-		</React.Fragment>
-			);
+		const pattern = /<br\s*\/?>/;
+		const words = this.props.text.split(pattern);
+		const lines = [];
+		for (let i=0; i<words.length; i++) {
+			if (i) 
+				lines.push(<br />)
+			lines.push(words[i])
+		}
 		return (
 			<div>
-				{finalText}
+				{lines}
 			</div>
 		)
 	}
