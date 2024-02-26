@@ -12,6 +12,9 @@ thead .IShopHeader {
   font-weight: bold;
 	height: 50px;
 }
+tfoot button {
+	margin: 10px;
+}
 caption {
   font-weight: bold;
   font-size: 40px;

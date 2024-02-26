@@ -1,26 +1,20 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import './IShopEditor.css';
 
-class IShopEditor extends React.Component {
+class IShopAdd extends React.Component {
 
 	static propTypes = {
-		product: PropTypes.shape({
-			id: PropTypes.number,
-			name: PropTypes.string,
-			price: PropTypes.number,
-			qt: PropTypes.number,
-			photoUrl: PropTypes.string
-		}),
+		id: PropTypes.number,
 		cbSave: PropTypes.func,
 		cbCancel: PropTypes.func,
-		cbDisable: PropTypes.func
 	}
+
 	state = {
-		name: this.props.product.name,
-		price: this.props.product.price,
-		qt: this.props.product.qt,
-		photoUrl: this.props.product.photoUrl,
+		name: '',
+		price: '',
+		qt: '',
+		photoUrl: '',
 		nameError: '',
 		urlError: '',
 		priceError: '',
@@ -28,19 +22,15 @@ class IShopEditor extends React.Component {
 		valid: true
 	}
 	nameChanged = (eo) => {
-		this.props.cbDisable();
 		this.setState({name: eo.target.value},this.validate)
 	};
 	imgChanged = (eo) => {
-		this.props.cbDisable();
 		this.setState({photoUrl: eo.target.value},this.validate)
 	};
 	priceChanged = (eo) => {
-		this.props.cbDisable();
 		this.setState({price: eo.target.value},this.validate)
 	};
 	qtChanged = (eo) => {
-		this.props.cbDisable();
 		this.setState({qt: eo.target.value},this.validate)
 	};
 	validate = () => {
@@ -62,9 +52,10 @@ class IShopEditor extends React.Component {
 	cancel = eo => {
 		this.props.cbCancel();
 	}
+	
 	render() {
-			return (
-				<div className='ShopItemCardEdit'>
+		return(
+			<div className='ShopItemCardEdit'>
 				<div className='ShopItemCardEdit_item'>
 					<span>ID: {this.props.id}</span>
 				</div>
@@ -95,8 +86,8 @@ class IShopEditor extends React.Component {
 				<button onClick={this.save} disabled={!this.state.valid}>Сохранить</button>
 				<button onClick = {this.cancel}>Выйти</button>
 			</div>
-			)		
-		}
+		)
 	}
+}
 
-export default IShopEditor;
+export default IShopAdd;

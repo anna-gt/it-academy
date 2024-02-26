@@ -1,4 +1,5 @@
-﻿import React, { Fragment } from 'react';
+﻿import React from 'react';
+import PropTypes from "prop-types";
 
 import './IShop.css';
 
@@ -7,26 +8,41 @@ import IShopItem from './IShopItem';
 import IShopHeader from './IShopHeader';
 import IShopCard from './IShopCard';
 import IShopEditor from './IShopEditor';
+import IShopAdd from './IShopAdd';
 
 class IShop extends React.Component {
+
+	static propTypes = {
+		name: PropTypes.string,
+		items: PropTypes.array,
+		names: PropTypes.string,
+		images: PropTypes.string,
+		prices: PropTypes.string,
+		qts: PropTypes.string,
+	}
 
 	state = {
 		selectedItemId: null,
 		currentItems: this.props.items,
 		editingItemId: null,
-		disabled: false
+		disabled: false,
+		addingItem: false,
+		newID: 5
 	}
 
 	selectedItem = (id) => {
 		if (!this.state.disabled) {
 			this.setState({selectedItemId: id});
-		if (this.state.editingItemId !==id )
-			this.setState({editingItemId: null})
-		}	
-	};
+			if (this.state.editingItemId !==id )
+				this.setState({editingItemId: null})
+			}	
+		};
 	deletedItem = (id) => {
-		let updateItems = this.state.currentItems.filter((item) => item.id !== id);
-		this.setState({currentItems: updateItems, selectedItemId: null, editingItemId: null});
+		let del = confirm('Вы точно хотите удалить выбранный товар?');
+		if (del) {
+			let updateItems = this.state.currentItems.filter((item) => item.id !== id);
+			this.setState({currentItems: updateItems, selectedItemId: null, editingItemId: null});
+		}
 	};
 	editingItem = (id) => {
 		this.setState({editingItemId: id, selectedItemId: null});
@@ -45,9 +61,22 @@ class IShop extends React.Component {
 		}
 	};
 	cancel = () => {
-		this.setState({editingItemId: null});
-		this.setState({selectedItemId: null});
-		this.setState({disabled: false})
+		this.setState({editingItemId: null, selectedItemId: null, disabled: false, addingItem: false});
+	}
+	
+	openAdditonField = (eo) => {
+		this.setState({editingItemId: null, selectedItemId: null, addingItem: true, disabled: true});
+	}
+	add = ({name,price,qt,image}) => {
+		let updateItems = this.state.currentItems.slice();
+		let newItem = {
+			name: name,
+			price: price,
+			qt: qt,
+			image: image
+		};
+		updateItems.push(newItem);
+		this.setState({currentItems: updateItems, addingItem: false, disabled: false, newID: (this.state.newID+1)})
 	}
 	disable = () => {
 		this.setState({disabled: true})
@@ -74,6 +103,7 @@ class IShop extends React.Component {
 		const itemsCard = <IShopCard product = {shownItem} />
 		const [editingItem] = this.state.currentItems.filter(i => i.id===this.state.editingItemId);
 		const itemsEditor = <IShopEditor 
+		id = {this.state.editingItemId}
 		key = {this.state.editingItemId} 
 		product = {editingItem} 
 		cbSave={this.save} 
@@ -93,9 +123,19 @@ class IShop extends React.Component {
 								qts = {this.props.qts} />
 						</thead>
 						<tbody>{itemsCode}</tbody>
+						<tfoot><tr><th scope='row' colSpan='6'>
+							<button onClick={this.openAdditonField} disabled={this.state.disabled}>Добавить новый товар</button>
+							</th></tr></tfoot>
 						</table>
 						{this.state.selectedItemId && itemsCard}
 						{this.state.editingItemId && itemsEditor}
+						{this.state.addingItem 
+						&&
+						<IShopAdd
+						id={this.state.newID}
+						cbCancel={this.cancel}
+						cbSave={this.add}
+						/>}
 				</div>
     )
 
