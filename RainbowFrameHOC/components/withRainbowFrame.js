@@ -16,4 +16,4 @@ function withRainbowFrame(colors) {
 	}
 }
 
-export default { withRainbowFrame };
+export { withRainbowFrame };
