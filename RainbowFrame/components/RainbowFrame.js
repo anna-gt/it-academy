@@ -8,19 +8,12 @@ class RainbowFrame extends React.Component {
 	};
 
 	render() {
-		const reduceColors = (previousValue, currentItem) => {
-			return(
-				<div style={{border:"solid 3px " + currentItem, padding:"10px"}}>
-					{previousValue}
-				</div>
-			)
-		}
-		const rainbowFrame = this.props.colors.reduce(reduceColors,this.props.children)
-		return (
-			<div style={{ width: 400, textAlign: 'center', margin: '0 auto' }}>
-				{rainbowFrame}
-			</div>
-		)
+		let code = this.props.children;
+				for (let i=0; i<this.props.colors.length; i++) {
+					const color = this.props.colors[i];
+					code = <div style={{border: `solid 3px ${color}`, margin: '5px'}}>{code}</div>
+				}
+				return code;
 	}
 }
 
