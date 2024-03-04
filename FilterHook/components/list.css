@@ -1,0 +1,8 @@
+body {
+	font-size: 20px;
+}
+.list {
+	width: 200px;
+	height: 150px;
+	overflow: scroll;
+}
