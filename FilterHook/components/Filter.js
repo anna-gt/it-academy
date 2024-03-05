@@ -20,14 +20,6 @@ const Filter = props => {
 		[isSort,filters]
 	);
 
-	function doFilter(letters) {
-		setFilters(letters);
-	};
-
-	function doSort(isSort) {
-		setSort(isSort);
-	};
-
 	function doReset() {
 		setSort(false);
 		setFilters('');
@@ -35,7 +27,7 @@ const Filter = props => {
 
 	return(
 		<div>
-			<Controls cbSort={doSort} cbFilter={doFilter} cbReset={doReset}/>
+			<Controls cbSort={setSort} cbFilter={setFilters} cbReset={doReset}/>
 			<List list={list} />
 		</div>
 	)
