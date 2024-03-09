@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import MobileClient from "./MobileClient";
 import AddClient from "./AddClient";
@@ -27,8 +27,9 @@ const MobileCompany = props => {
 				mobileEvents.removeListener('ECancelAdding',setAddingClient);
 			};
 		},
-		[]
+		[clients]
 	);
+	
 	function clientChanged({id,sName,name,fName,balance}) {
 		let newClients = [...clients]; // копия самого массива клиентов
 		newClients.forEach( (client,i) => {
@@ -49,13 +50,10 @@ const MobileCompany = props => {
 	function deleteClient(id) {
 		const del = confirm('Удалить клиента?');
 		if (del) {
-			console.log(clients);
 			let newClients = clients.filter( (client) => client.id !== id);
 			setClients(newClients);
 		} 
 	};
-
-	// const memoizedDEleteClient = useCallback(deleteClient, [clients]);
 
 	function addClient({id,sName,name,fName,balance}) {
 		let newClients = [...clients];
