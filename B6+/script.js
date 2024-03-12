@@ -18,7 +18,7 @@ function buildWrapper(tag) {
     return finStr;
   }
   function wrapX (string, atr) {
-    finString = makeMnemonic(string);
+    let finString = makeMnemonic(string);
     let finAtr = '';
     for (let key in atr) {
       let atrValue = makeMnemonic(atr[key]);
