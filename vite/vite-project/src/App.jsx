@@ -1,34 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react';
+import useSWR from "swr";
 import './App.css'
 
+async function dataFetcher() {
+	const response = await fetch('https://jsonplaceholder.typicode.com/photos?_limit=10&_page=3', {
+		method: 'get',
+		headers: {
+      "Accept": "application/json",
+    },
+	});
+	if (!response.ok) {
+		throw new Error("fetch error " + response.status);
+	}
+	return response.json();
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+	const [photos, setPhotos] = useState([]);
+
+	const { data, error, isLoading } = useSWR(
+		"jsonphotos",
+		dataFetcher
+	);
+
+	useEffect(() => {
+		setPhotos(data);
+		console.log(data)
+	},[data])
+
+
+	useEffect(() =>{
+		document.addEventListener('scroll', scrollHandler)
+		return function () {
+			document.removeEventListener('scroll', scrollHandler)
+		}
+	}, []);
+
+	const scrollHandler = (eo) => {
+		console.log(scroll);
+	};
+
+	if ( error ) {
+    return <div>Ошибка: {error}</div>;
+  }
+
+  if ( isLoading ) {
+    return <div>загрузка данных...</div>;
+  }
+
+	const photoCode = photos.map(photo =>
+		<div className='photo' key={photo.id}>
+			<div className='title'>{photo.id}. {photo.title}</div>
+			<img src={photo.thumbnailUrl} alt=""/>
+		</div>)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='app'>
+			{photoCode}
+    </div>
   )
 }
 
