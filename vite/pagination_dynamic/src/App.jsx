@@ -2,21 +2,25 @@ import { useState, useEffect } from 'react';
 import useSWR from "swr";
 import './App.css'
 
-async function dataFetcher() {
-	const response = await fetch('https://jsonplaceholder.typicode.com/photos?_limit=10&_page=3', {
-		method: 'get',
-		headers: {
-      "Accept": "application/json",
-    },
-	});
-	if (!response.ok) {
-		throw new Error("fetch error " + response.status);
-	}
-	return response.json();
-}
 
 function App() {
 	const [photos, setPhotos] = useState([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [fetching, setFetching] = useState(true);
+	const [totalCount, setTotalCount] = useState(0);
+
+	async function dataFetcher() {
+		const response = await fetch(`https://jsonplaceholder.typicode.com/photos?_limit=10&_page=${currentPage}`, {
+			method: 'get',
+			headers: {
+				"Accept": "application/json",
+			},
+		});
+		if (!response.ok) {
+			throw new Error("fetch error " + response.status);
+		}
+		return response.json();
+	}
 
 	const { data, error, isLoading } = useSWR(
 		"jsonphotos",
@@ -24,9 +28,14 @@ function App() {
 	);
 
 	useEffect(() => {
-		setPhotos(data);
-		console.log(data)
-	},[data])
+		if (fetching) {
+			console.log('fetching');
+			if ( !isLoading ) {
+				setPhotos([...photos,...data]);
+		 }
+		 setCurrentPage(prevState => prevState + 1);
+		}	
+},[fetching, data, isLoading])
 
 
 	useEffect(() =>{
@@ -34,10 +43,12 @@ function App() {
 		return function () {
 			document.removeEventListener('scroll', scrollHandler)
 		}
-	}, []);
+	}, [totalCount, fetching]);
 
 	const scrollHandler = (eo) => {
-		console.log(scroll);
+		if (eo.target.documentElement.scrollHeight - (eo.target.documentElement.scrollTop + window.innerHeight) < 100) {
+			setFetching(true);
+		}
 	};
 
 	if ( error ) {
