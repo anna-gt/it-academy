@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import App from './App'
 
 describe('App', () => {
-  it('renders the App component', () => {
+  test('renders the App component', () => {
     render(<App />)
     const helloWorldElem = screen.getByText(/hello world/i)
 		expect(helloWorldElem).toBeInTheDocument();

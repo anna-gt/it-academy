@@ -27,19 +27,16 @@ import {BrowserRouter, Routes, Route, Link} from "react-router-dom";
 //   )
 // }
 
-import AboutPage from './pages/AboutPage';
-import MainPage from './pages/MainPage';
+
+import AppRouter from './router/AppRouter';
+import Navbar from './components/Navbar/Navbar';
 
 const App = () => {
 	return (
-		<BrowserRouter>
-			<Link to="/" data-testid="main-link">main</Link>
-			<Link to="/about" data-testid="about-link">about</Link>
-			<Routes>
-				<Route path="/" element={<MainPage />} />
-				<Route path="/about" element={<AboutPage />} />
-			</Routes>
-		</BrowserRouter>
+		<div>
+			<Navbar />
+			<AppRouter />
+		</div>
 	)
 }
 
